@@ -12,8 +12,8 @@ export class AppError extends Error {
   }
 }
 
-export class NotFoundError extends AppError {
-  constructor(resource = 'Resource') {
-    super(`${resource} not found`, StatusCodes.NOT_FOUND);
+export class UnauthorizedError extends AppError {
+  constructor(message = 'Unauthorized') {
+    super(message, StatusCodes.UNAUTHORIZED);
   }
 }

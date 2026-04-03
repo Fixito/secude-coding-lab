@@ -2,7 +2,7 @@ import { StatusCodes, getReasonPhrase } from 'http-status-codes';
 import { ZodError } from 'zod';
 import type { NextFunction, Request, Response } from 'express';
 
-import { env } from '../../config/env.js';
+import { env } from '@/config/env.js';
 
 interface HttpError extends Error {
   statusCode?: number;

@@ -2,15 +2,19 @@ import { and, eq } from 'drizzle-orm';
 import { Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
-import { db } from '../../../infrastructure/db/drizzle.client.js';
-import { usersTable } from '../../../infrastructure/db/schemas/user.schema.js';
+import { usersTable } from '@/infrastructure/db/schemas/user.schema.js';
+import { db } from '@/infrastructure/db/drizzle.client.js';
+import { UnauthorizedError } from '@/shared/errors/index.js';
+import { validate } from '@/shared/middlewares/validate.middleware.js';
+import { loginSchema } from '../application/auth.dto.js';
 
 export function createAuthRouter() {
   const router = Router();
 
-  router.post('/login', async (req, res) => {
+  router.post('/login', validate(loginSchema), async (req, res) => {
     const { email, password } = req.body;
 
+    //! VULNERABLE CODE - SQL INJECTION
     // const query = `SELECT * FROM users WHERE email = '${email}' AND password = '${password}'`;
     // const result = await db.run(query);
     // const user = result.rows[0];
@@ -22,7 +26,7 @@ export function createAuthRouter() {
 
     const user = result[0];
 
-    if (!user) return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Invalid credentials' });
+    if (!user) throw new UnauthorizedError('Invalid email or password');
 
     return res.status(StatusCodes.OK).json({ message: 'Logged in' });
   });
