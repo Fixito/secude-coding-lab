@@ -31,6 +31,12 @@ export function createAuthRouter() {
     return res.status(StatusCodes.OK).json({ message: 'Logged in' });
   });
 
+  // Simule un login pour démontrer la vulnérabilité de session fixation
+  router.get('/login', (_req, res) => {
+    res.cookie('session', 'user123');
+    res.send('Logged in');
+  });
+
   return router;
 }
 

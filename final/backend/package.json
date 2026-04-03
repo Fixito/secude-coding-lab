@@ -1,5 +1,5 @@
 {
-  "name": "secude-coding-lab",
+  "name": "secure-coding-lab-backend",
   "version": "1.0.0",
   "description": "",
   "main": "dist/server.js",
@@ -17,6 +17,7 @@
   "packageManager": "pnpm@10.33.0",
   "type": "module",
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.10",
     "@types/escape-html": "^1.0.4",
     "@types/express": "^5.0.6",
     "@types/morgan": "^1.9.10",
@@ -30,8 +31,8 @@
   },
   "dependencies": {
     "@libsql/client": "^0.17.2",
+    "cookie-parser": "^1.4.7",
     "drizzle-orm": "^0.45.2",
-    "drizzle-seed": "^0.3.1",
     "http-status-codes": "^2.3.0",
     "morgan": "^1.10.1",
     "zod": "^4.3.6"
