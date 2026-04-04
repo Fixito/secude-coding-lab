@@ -1,6 +1,7 @@
-import { ForbiddenError } from '@/shared/errors/index.js';
 import { Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
+
+import { ForbiddenError } from '@/errors/index.js';
 
 export function createTransferRouter() {
   const router = Router();

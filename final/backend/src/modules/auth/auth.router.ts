@@ -2,11 +2,11 @@ import { and, eq } from 'drizzle-orm';
 import { Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
-import { usersTable } from '@/infrastructure/db/schemas/user.schema.js';
-import { db } from '@/infrastructure/db/drizzle.client.js';
-import { UnauthorizedError } from '@/shared/errors/index.js';
-import { validate } from '@/shared/middlewares/validate.middleware.js';
-import { loginSchema } from '../application/auth.dto.js';
+import { usersTable } from '@/db/schemas/user.schema.js';
+import { db } from '@/db/client.js';
+import { UnauthorizedError } from '@/errors/index.js';
+import { validate } from '@/middlewares/validate.middleware.js';
+import { loginSchema } from './auth.schema.js';
 
 export function createAuthRouter() {
   const router = Router();

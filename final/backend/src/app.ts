@@ -6,8 +6,8 @@ import morgan from 'morgan';
 import { env } from './config/env.js';
 import { router } from './routes.js';
 
-import { errorHandler } from './shared/middlewares/error.middleware.js';
-import { notFoundHandler } from './shared/middlewares/not-found.middleware.js';
+import { errorHandler } from './middlewares/error.middleware.js';
+import { notFoundHandler } from './middlewares/not-found.middleware.js';
 
 export const app = express();
 

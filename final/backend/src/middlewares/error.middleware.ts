@@ -3,39 +3,30 @@ import { ZodError } from 'zod';
 import type { NextFunction, Request, Response } from 'express';
 
 import { env } from '@/config/env.js';
+import { AppError } from '@/errors/index.js';
 
-interface HttpError extends Error {
-  statusCode?: number;
-}
-
-export function errorHandler(err: HttpError, req: Request, res: Response, _next: NextFunction) {
+export function errorHandler(err: Error, req: Request, res: Response, _next: NextFunction) {
   res.setHeader('Content-Type', 'application/problem+json');
 
   if (err instanceof ZodError) {
-    console.warn(
-      {
-        issues: err.issues.map((e) => ({
-          field: e.path.join('.'),
-          message: e.message,
-        })),
-      },
-      'Validation failed',
-    );
+    const errors = err.issues.map((e) => ({
+      field: e.path.join('.'),
+      message: e.message,
+    }));
+
+    console.warn({ issues: errors }, 'Validation failed');
 
     return res.status(StatusCodes.BAD_REQUEST).json({
       title: getReasonPhrase(StatusCodes.BAD_REQUEST),
       status: StatusCodes.BAD_REQUEST,
       detail: 'Validation failed',
       instance: req.originalUrl,
-      errors: err.issues.map((e) => ({
-        field: e.path.join('.'),
-        message: e.message,
-      })),
+      errors,
       ...(env.NODE_ENV === 'development' && { stack: err.stack }),
     });
   }
 
-  const statusCode = err.statusCode ?? StatusCodes.INTERNAL_SERVER_ERROR;
+  const statusCode = err instanceof AppError ? err.statusCode : StatusCodes.INTERNAL_SERVER_ERROR;
 
   const detail =
     statusCode === StatusCodes.INTERNAL_SERVER_ERROR && env.NODE_ENV !== 'development'

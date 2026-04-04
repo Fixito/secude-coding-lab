@@ -2,10 +2,10 @@ import escape from 'escape-html';
 import { Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
-import { commentsTable } from '@/infrastructure/db/schemas/comment.schema.js';
-import { db } from '@/infrastructure/db/drizzle.client.js';
-import { validate } from '@/shared/middlewares/validate.middleware.js';
-import { commentSchema } from '../application/comment.dt.js';
+import { commentsTable } from '@/db/schemas/comment.schema.js';
+import { db } from '@/db/client.js';
+import { validate } from '@/middlewares/validate.middleware.js';
+import { commentSchema } from './comment.schema.js';
 
 const router = Router();
 
