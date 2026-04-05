@@ -4,12 +4,13 @@ import { Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import jwt from 'jsonwebtoken';
 
-import { usersTable } from '@/db/schemas/user.schema.js';
-import { db } from '@/db/client.js';
 import { env } from '@/config/env.js';
+import { db } from '@/db/client.js';
+import { usersTable } from '@/db/schemas/user.schema.js';
 import { UnauthorizedError } from '@/errors/index.js';
 import { loginRateLimiter } from '@/middlewares/rate-limit.middleware.js';
 import { validate } from '@/middlewares/validate.middleware.js';
+
 import { loginSchema } from './auth.schema.js';
 
 export function createAuthRouter() {

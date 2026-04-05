@@ -2,8 +2,9 @@ import bcrypt from 'bcryptjs';
 import { drizzle } from 'drizzle-orm/libsql';
 
 import { env } from '@/config/env.js';
-import { usersTable } from './schemas/user.schema.js';
+
 import { commentsTable } from './schemas/comment.schema.js';
+import { usersTable } from './schemas/user.schema.js';
 
 const db = drizzle(env.DB_FILE_NAME);
 

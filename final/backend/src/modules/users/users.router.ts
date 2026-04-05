@@ -2,11 +2,12 @@ import { eq } from 'drizzle-orm';
 import { Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
-import { usersTable } from '@/db/schemas/user.schema.js';
 import { db } from '@/db/client.js';
+import { usersTable } from '@/db/schemas/user.schema.js';
 import { ForbiddenError, NotFoundError } from '@/errors/index.js';
 import { requireAuth } from '@/middlewares/auth.middleware.js';
 import { validate } from '@/middlewares/validate.middleware.js';
+
 import { userParamsSchema } from './users.schema.js';
 
 export function createUsersRouter() {

@@ -55,14 +55,18 @@ Le serveur démarre sur `http://localhost:5000`.
 
 ## Scripts
 
-| Commande         | Description                                                    |
-| ---------------- | -------------------------------------------------------------- |
-| `pnpm dev`       | Serveur en mode watch (tsx)                                    |
-| `pnpm build`     | Compilation TypeScript → `dist/`                               |
-| `pnpm start`     | Démarrer le build compilé                                      |
-| `pnpm typecheck` | Vérification des types sans compilation                        |
-| `pnpm db:push`   | Appliquer le schéma Drizzle à la base                          |
-| `pnpm db:seed`   | Insérer des données initiales (2 utilisateurs, 2 commentaires) |
+| Commande           | Description                                                    |
+| ------------------ | -------------------------------------------------------------- |
+| `pnpm dev`         | Serveur en mode watch (tsx)                                    |
+| `pnpm build`       | Compilation TypeScript → `dist/`                               |
+| `pnpm start`       | Démarrer le build compilé                                      |
+| `pnpm typecheck`   | Vérification des types sans compilation                        |
+| `pnpm lint`        | Analyse statique du code (oxlint)                              |
+| `pnpm lint:fix`    | Correction automatique des erreurs de lint                     |
+| `pnpm fmt`         | Formatage du code (oxfmt)                                      |
+| `pnpm fmt:check`   | Vérification du formatage sans modification                    |
+| `pnpm db:push`     | Appliquer le schéma Drizzle à la base                          |
+| `pnpm db:seed`     | Insérer des données initiales (2 utilisateurs, 2 commentaires) |
 
 ## Architecture
 

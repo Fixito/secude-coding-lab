@@ -1,6 +1,6 @@
+import type { NextFunction, Request, Response } from 'express';
 import { StatusCodes, getReasonPhrase } from 'http-status-codes';
 import { ZodError } from 'zod';
-import type { NextFunction, Request, Response } from 'express';
 
 import { env } from '@/config/env.js';
 import { logger } from '@/config/logger.js';

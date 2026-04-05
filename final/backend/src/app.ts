@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
@@ -7,10 +8,9 @@ import { pinoHttp } from 'pino-http';
 
 import { env } from './config/env.js';
 import { logger } from './config/logger.js';
-import { router } from './routes.js';
-
 import { errorHandler } from './middlewares/error.middleware.js';
 import { notFoundHandler } from './middlewares/not-found.middleware.js';
+import { router } from './routes.js';
 
 export const app = express();
 

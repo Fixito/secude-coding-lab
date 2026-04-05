@@ -1,5 +1,5 @@
-import { StatusCodes, getReasonPhrase } from 'http-status-codes';
 import type { Request, Response } from 'express';
+import { StatusCodes, getReasonPhrase } from 'http-status-codes';
 
 export function notFoundHandler(req: Request, res: Response) {
   res
