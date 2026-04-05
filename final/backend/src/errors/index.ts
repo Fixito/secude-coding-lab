@@ -21,3 +21,9 @@ export class ForbiddenError extends AppError {
     super(message, StatusCodes.FORBIDDEN);
   }
 }
+
+export class NotFoundError extends AppError {
+  constructor(message = 'Ressource') {
+    super(`${message} not found`, StatusCodes.NOT_FOUND);
+  }
+}

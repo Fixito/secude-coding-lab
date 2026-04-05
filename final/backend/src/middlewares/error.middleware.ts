@@ -3,6 +3,7 @@ import { ZodError } from 'zod';
 import type { NextFunction, Request, Response } from 'express';
 
 import { env } from '@/config/env.js';
+import { logger } from '@/config/logger.js';
 import { AppError } from '@/errors/index.js';
 
 export function errorHandler(err: Error, req: Request, res: Response, _next: NextFunction) {
@@ -14,7 +15,7 @@ export function errorHandler(err: Error, req: Request, res: Response, _next: Nex
       message: e.message,
     }));
 
-    console.warn({ issues: errors }, 'Validation failed');
+    logger.warn({ issues: errors, url: req.originalUrl }, 'Validation failed');
 
     return res.status(StatusCodes.BAD_REQUEST).json({
       title: getReasonPhrase(StatusCodes.BAD_REQUEST),
@@ -33,7 +34,7 @@ export function errorHandler(err: Error, req: Request, res: Response, _next: Nex
       ? 'An unexpected error occurred'
       : err.message;
 
-  console.error({ err, method: req.method, url: req.originalUrl, statusCode }, 'Request failed');
+  logger.error({ err, method: req.method, url: req.originalUrl, statusCode }, 'Request failed');
 
   return res.status(statusCode).json({
     title: getReasonPhrase(statusCode),

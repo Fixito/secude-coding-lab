@@ -1,9 +1,15 @@
 import { env } from './config/env.js';
+import { logger } from './config/logger.js';
 import { app } from './app.js';
 
 const PORT = Number(env.PORT);
 const HOSTNAME = env.HOSTNAME;
 
-app.listen(PORT, HOSTNAME, () => {
-  console.log(`Server is running on http://${HOSTNAME}:${PORT}/`);
+const server = app.listen(PORT, HOSTNAME, () => {
+  logger.info({ env: env.NODE_ENV }, `Server is running on http://${HOSTNAME}:${PORT}/`);
+});
+
+process.on('SIGTERM', () => {
+  logger.info('SIGTERM received. Shutting down gracefully...');
+  server.close(() => process.exit(0));
 });

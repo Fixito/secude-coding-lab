@@ -7,10 +7,17 @@ export function createTransferRouter() {
   const router = Router();
 
   router.post('/', (req, res) => {
-    //! VULNERABLE CODE - CSRF
+    //! VULNERABLE — A01 : CSRF (Cross-Site Request Forgery)
+    // Sans vérification, n'importe quel site tiers peut soumettre ce formulaire
+    // au nom d'un utilisateur authentifié. Un simple lien malveillant suffit :
+    // <img src="http://bank.com/api/v1/transfers?to=attacker&amount=1000" />
     // console.log(req.cookies);
 
-    //* CSRF Protection
+    //* SECURE — Double Submit Cookie Pattern
+    // Le token CSRF est généré côté serveur, envoyé dans un cookie ET dans le
+    // corps du formulaire. Seul le site légitime (qui peut lire son propre cookie)
+    // peut construire une requête valide. Un site tiers ne peut pas lire ce cookie
+    // (politique Same-Origin du navigateur).
     const token = req.body.csrf;
     const expected = req.cookies.csrf;
 
@@ -18,7 +25,7 @@ export function createTransferRouter() {
       throw new ForbiddenError('Invalid CSRF token');
     }
 
-    return res.status(StatusCodes.OK).json({ message: 'Transfer done.' });
+    return res.status(StatusCodes.OK).json({ data: { message: 'Transfer done.' } });
   });
 
   return router;

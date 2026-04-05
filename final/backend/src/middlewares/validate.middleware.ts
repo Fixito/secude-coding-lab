@@ -9,6 +9,8 @@ export function validate(schema: z.ZodType, source: 'body' | 'query' | 'params' 
       return next(result.error);
     }
 
+    req[source] = result.data;
+
     next();
   };
 }

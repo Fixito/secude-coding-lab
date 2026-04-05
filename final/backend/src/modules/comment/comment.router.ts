@@ -15,7 +15,7 @@ function createCommentRouter() {
 
     const newComment = await db.insert(commentsTable).values({ content }).returning();
 
-    return res.status(StatusCodes.CREATED).json({ data: newComment });
+    return res.status(StatusCodes.CREATED).json({ data: newComment[0] });
   });
 
   router.get('/', async (_req, res) => {

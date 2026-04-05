@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs';
 import { drizzle } from 'drizzle-orm/libsql';
 
 import { env } from '@/config/env.js';
@@ -15,10 +16,19 @@ async function main() {
 
   console.log('Database reset.');
 
+  // Les mots de passe sont hashés avec bcrypt (salt factor 12).
+  // Stocker des mots de passe en clair en base (A02) permettrait à toute
+  // personne ayant accès à la DB de les lire directement.
+  const hashedPassword = await bcrypt.hash('123secret', 12);
+
   await db.insert(usersTable).values([
     {
       email: 'john.doe@example.com',
-      password: '123secret',
+      password: hashedPassword,
+    },
+    {
+      email: 'jane.smith@example.com',
+      password: hashedPassword,
     },
   ]);
 
