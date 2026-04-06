@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "mikestead.dotenv",
+    "Postman.postman-for-vscode",
+    "oxc.oxc-vscode",
+    "qwtel.sqlite-viewer"
+  ]
+}

