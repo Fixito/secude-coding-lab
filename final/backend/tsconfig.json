@@ -40,5 +40,5 @@
       "@/*": ["./src/*"]
     }
   },
-  "exclude": ["drizzle.config.ts"]
+  "exclude": ["node_modules", "drizzle.config.ts", "oxlint.config.ts"]
 }
