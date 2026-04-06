@@ -166,12 +166,9 @@ Convention dans le code :
 - **Module :** `auth`
 - **Vulnérable :** aucune limite sur les tentatives de connexion (bruteforce possible)
 - **Corrigé :** `express-rate-limit` — 5 tentatives / 15 min par IP
-- **À tester :**
+- **À tester (script cross-platform depuis la racine du projet) :**
   ```bash
-  for i in {1..10}; do curl -s -o /dev/null -w "%{http_code}\n" \
-    -X POST http://localhost:5000/api/v1/auth/login \
-    -H "Content-Type: application/json" \
-    -d '{"email":"a@a.com","password":"wrong"}'; done
+  node starter/brute-force-demo.mjs
   ```
 
 ---
