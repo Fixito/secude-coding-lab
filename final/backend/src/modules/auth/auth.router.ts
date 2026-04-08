@@ -65,16 +65,6 @@ export function createAuthRouter() {
     return res.status(StatusCodes.OK).json({ data: { token } });
   });
 
-  // Simule un login pour démontrer la vulnérabilité de session fixation.
-  //! VULNERABLE — Session Fixation
-  // Le cookie de session est défini sans HttpOnly (lisible par JS),
-  // sans Secure (transmis en HTTP clair) et sans SameSite (CSRF facilité).
-  // De plus, la valeur est statique — elle ne change pas après authentification.
-  router.get('/login', (_req, res) => {
-    res.cookie('session', 'user123');
-    res.status(StatusCodes.OK).send('Logged in');
-  });
-
   return router;
 }
 

@@ -96,7 +96,6 @@ src/
 | Méthode | Chemin               | Auth | Description                    |
 | ------- | -------------------- | ---- | ------------------------------ |
 | `POST`  | `/api/v1/auth/login` | Non  | Connexion — retourne un JWT    |
-| `GET`   | `/api/v1/auth/login` | Non  | Démo session fixation          |
 | `GET`   | `/api/v1/comments`   | Non  | Lister les commentaires        |
 | `POST`  | `/api/v1/comments`   | Non  | Créer un commentaire           |
 | `POST`  | `/api/v1/transfers`  | Non  | Virement (démo CSRF)           |

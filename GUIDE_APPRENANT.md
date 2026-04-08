@@ -68,15 +68,15 @@ app.use(helmet());
 
 #### Ce que `helmet()` ajoute concrètement
 
-| En-tête | Valeur par défaut | Rôle |
-|---|---|---|
-| `Content-Security-Policy` | Politique restrictive | Indique au navigateur quelles ressources (scripts, images, styles…) il est autorisé à charger. Réduit la surface d'attaque XSS. |
-| `X-Frame-Options` | `SAMEORIGIN` | Empêche la page d'être intégrée dans un `<iframe>` depuis un autre domaine. Protège contre le **clickjacking**. |
-| `X-Content-Type-Options` | `nosniff` | Interdit au navigateur de "deviner" le type MIME d'une réponse. |
-| `Strict-Transport-Security` | `max-age=15552000` | Force le navigateur à toujours utiliser HTTPS pour ce domaine pendant 180 jours. |
-| `Referrer-Policy` | `no-referrer` | Contrôle les informations envoyées dans l'en-tête `Referer`. Évite de fuiter des URLs internes. |
-| `X-DNS-Prefetch-Control` | `off` | Désactive la résolution DNS anticipée des liens de la page. |
-| `X-Powered-By` | *(supprimé)* | Retire l'en-tête qui révèle la stack technique (`Express`). |
+| En-tête                     | Valeur par défaut     | Rôle                                                                                                                            |
+| --------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `Content-Security-Policy`   | Politique restrictive | Indique au navigateur quelles ressources (scripts, images, styles…) il est autorisé à charger. Réduit la surface d'attaque XSS. |
+| `X-Frame-Options`           | `SAMEORIGIN`          | Empêche la page d'être intégrée dans un `<iframe>` depuis un autre domaine. Protège contre le **clickjacking**.                 |
+| `X-Content-Type-Options`    | `nosniff`             | Interdit au navigateur de "deviner" le type MIME d'une réponse.                                                                 |
+| `Strict-Transport-Security` | `max-age=15552000`    | Force le navigateur à toujours utiliser HTTPS pour ce domaine pendant 180 jours.                                                |
+| `Referrer-Policy`           | `no-referrer`         | Contrôle les informations envoyées dans l'en-tête `Referer`. Évite de fuiter des URLs internes.                                 |
+| `X-DNS-Prefetch-Control`    | `off`                 | Désactive la résolution DNS anticipée des liens de la page.                                                                     |
+| `X-Powered-By`              | _(supprimé)_          | Retire l'en-tête qui révèle la stack technique (`Express`).                                                                     |
 
 Ces headers sont des **directives** envoyées au navigateur — c'est le navigateur qui les applique, pas le serveur. Ils constituent une défense en profondeur mais ne remplacent pas la correction des vulnérabilités dans le code.
 
@@ -89,6 +89,7 @@ Ces headers sont des **directives** envoyées au navigateur — c'est le navigat
 ### Validation
 
 Dans Postman, renvoyer la même requête et vérifier l'onglet **Headers** de la réponse :
+
 - `X-Powered-By` : absent
 - `Content-Security-Policy` : présent
 - `X-Frame-Options` : présent
@@ -297,7 +298,7 @@ import escape from 'escape-html';
 
 // Avant : `<p>${c.content}</p>` → dangereux
 // Après :
-`<p>${escape(c.content)}</p>`
+`<p>${escape(c.content)}</p>`;
 // escape() convertit < → &lt;  > → &gt;  " → &quot;  etc.
 ```
 
@@ -335,7 +336,9 @@ La route `POST /api/v1/transfers` accepte n'importe quelle requête POST sans v�
 <form action="http://localhost:5000/api/v1/transfers" method="POST">
   <input type="hidden" name="amount" value="1000" />
 </form>
-<script>document.forms[0].submit();</script>
+<script>
+  document.forms[0].submit();
+</script>
 ```
 
 ### Objectif
@@ -350,7 +353,7 @@ Le token est déjà généré et placé dans le formulaire (`GET /form` dans `ap
 
 ```ts
 // Côté serveur — vérification dans le handler POST
-const tokenFromBody = req.body.csrf;      // valeur soumise dans le formulaire
+const tokenFromBody = req.body.csrf; // valeur soumise dans le formulaire
 const tokenFromCookie = req.cookies.csrf; // cookie posé par le serveur
 
 // Un site tiers ne peut pas lire le cookie (politique Same-Origin)
@@ -424,73 +427,16 @@ Envoyer vers `/users/1` → **HTTP 200** : accès autorisé uniquement à son pr
 
 ---
 
-## Étape 8 — Session Fixation
-
-### Contexte
-
-La route `GET /api/v1/auth/login` simule une authentification basée sur les cookies de session. Le cookie posé présente trois problèmes cumulés :
-
-1. **Valeur statique** : le cookie `session=user123` ne change jamais. Un attaquant qui connaît cette valeur peut se faire passer pour l'utilisateur.
-2. **Absence de `HttpOnly`** : le cookie est accessible via JavaScript — lisible par une attaque XSS.
-3. **Absence de `SameSite`** : le cookie est envoyé lors de requêtes cross-origin, facilitant le CSRF.
-
-### Démonstration
-
-Dans Postman, envoyer une requête GET vers `http://localhost:5000/api/v1/auth/login` et inspecter l'onglet **Cookies** de la réponse :
-- La valeur est `user123` (statique, prédictible)
-- Aucun flag `HttpOnly`, `SameSite`, ni `Secure` n'est présent
-
-### Objectif
-
-Corriger les flags du cookie pour qu'il soit :
-- `HttpOnly` : inaccessible à JavaScript
-- `SameSite=Strict` : non envoyé lors de requêtes cross-origin
-- `Secure` : transmis uniquement en HTTPS (en production)
-
-Et régénérer la valeur du cookie après chaque authentification.
-
-### Indices
-
-**Fichier à modifier :** `src/modules/auth/auth.router.ts`
-
-```ts
-import crypto from 'node:crypto';
-
-// Générer une valeur aléatoire non prédictible
-const sessionId = crypto.randomBytes(32).toString('hex');
-
-res.cookie('session', sessionId, {
-  httpOnly: true,       // inaccessible à document.cookie
-  sameSite: 'strict',   // bloque l'envoi cross-origin
-  secure: process.env.NODE_ENV === 'production',  // HTTPS uniquement en prod
-  maxAge: 3600 * 1000,  // expiration 1h
-});
-```
-
-#### 📖 Documentation
-
-- [Node.js — crypto.randomBytes](https://nodejs.org/api/crypto.html#cryptorandombytessize-callback)
-- [MDN — Set-Cookie / attributs de sécurité](https://developer.mozilla.org/fr/docs/Web/HTTP/Reference/Headers/Set-Cookie)
-- [OWASP — Session Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)
-
-### Validation
-
-Dans Postman, renvoyer la requête GET vers `/api/v1/auth/login` et vérifier l'onglet **Cookies** :
-- La valeur est une chaîne hexadécimale aléatoire (différente à chaque appel)
-- Les flags `HttpOnly` et `SameSite=Strict` sont présents
-
----
-
-## Étape 9 — Audit des dépendances et analyse statique
+## Étape 8 — Audit des dépendances et analyse statique
 
 ### Contexte
 
 Deux types d'outils permettent de détecter des vulnérabilités **sans exécuter le code** :
 
-| Outil | Ce qu'il analyse | Exemple |
-|---|---|---|
+| Outil            | Ce qu'il analyse                      | Exemple                                   |
+| ---------------- | ------------------------------------- | ----------------------------------------- |
 | **`pnpm audit`** | Les dépendances tierces (CVE publiés) | "express@4.18 contient une faille connue" |
-| **SAST** | Votre propre code source | "cette concaténation SQL est dangereuse" |
+| **SAST**         | Votre propre code source              | "cette concaténation SQL est dangereuse"  |
 
 ### 9a — Audit des dépendances (`pnpm audit`)
 
@@ -507,11 +453,11 @@ pnpm audit --fix
 pnpm audit --audit-level=high
 ```
 
-| Niveau | Signification |
-|---|---|
-| `low` | Impact limité, à corriger à l'occasion |
-| `moderate` | Risque réel selon le contexte |
-| `high` | À corriger avant mise en production |
+| Niveau     | Signification                                      |
+| ---------- | -------------------------------------------------- |
+| `low`      | Impact limité, à corriger à l'occasion             |
+| `moderate` | Risque réel selon le contexte                      |
+| `high`     | À corriger avant mise en production                |
 | `critical` | Exploitable immédiatement — bloquer le déploiement |
 
 #### 📖 Documentation
@@ -542,12 +488,14 @@ Code source → Analyse des patterns → Rapport "ligne X : ce code ressemble à
 ```
 
 **Ce qu'il détecte (exemples) :**
+
 - Requêtes SQL construites par concaténation de chaînes
 - Contenu utilisateur injecté dans du HTML sans échappement
 - Secrets hardcodés dans le code (`const apiKey = "sk-..."`)
 - Utilisation de fonctions connues pour être dangereuses (`eval()`, `exec()`)
 
 **Ce qu'il ne détecte pas :**
+
 - Les vulnérabilités logiques (règle métier mal implémentée)
 - Les failles dans les dépendances tierces (rôle de `pnpm audit`)
 - Les patterns dangereux écrits d'une façon qu'il ne reconnaît pas
@@ -560,16 +508,15 @@ Des outils SAST existent pour TypeScript/JavaScript : Semgrep, Snyk Code, SonarQ
 
 ## Récapitulatif
 
-| # | Vulnérabilité | Fichier clé | Correction |
-|---|---|---|---|
-| 1 | A05 — Security Misconfiguration | `app.ts` | `helmet()` + `cors({ origin })` |
-| 2 | A03 — SQL Injection | `auth.router.ts` | Requêtes paramétrées (Drizzle ORM) |
-| 3 | A02 — Cryptographic Failures | `auth.router.ts` + seed | `bcrypt.hash()` + `bcrypt.compare()` |
-| 4 | A07 — Brute Force | `auth.router.ts` | `express-rate-limit` |
-| 5 | A03 — XSS | `comment.router.ts` | `escape-html` |
-| 6 | CSRF | `transfer.router.ts` | Double Submit Cookie Pattern |
-| 7 | A01 — Broken Access Control | `users.router.ts` | `requireAuth` + comparaison userId |
-| 8 | Session Fixation | `auth.router.ts` | Flags `HttpOnly`, `SameSite`, `Secure` |
-| 9 | Dépendances + code source | `package.json` | `pnpm audit` + SAST |
+| #   | Vulnérabilité                   | Fichier clé             | Correction                           |
+| --- | ------------------------------- | ----------------------- | ------------------------------------ |
+| 1   | A05 — Security Misconfiguration | `app.ts`                | `helmet()` + `cors({ origin })`      |
+| 2   | A03 — SQL Injection             | `auth.router.ts`        | Requêtes paramétrées (Drizzle ORM)   |
+| 3   | A02 — Cryptographic Failures    | `auth.router.ts` + seed | `bcrypt.hash()` + `bcrypt.compare()` |
+| 4   | A07 — Brute Force               | `auth.router.ts`        | `express-rate-limit`                 |
+| 5   | A03 — XSS                       | `comment.router.ts`     | `escape-html`                        |
+| 6   | CSRF                            | `transfer.router.ts`    | Double Submit Cookie Pattern         |
+| 7   | A01 — Broken Access Control     | `users.router.ts`       | `requireAuth` + comparaison userId   |
+| 8   | Dépendances + code source       | `package.json`          | `pnpm audit` + SAST                  |
 
 > La solution complète de chaque étape est disponible dans `final/backend/src/`.
