@@ -1,5 +1,5 @@
-import { defineConfig } from 'oxlint';
 import security from 'eslint-plugin-security';
+import { defineConfig } from 'oxlint';
 
 export default defineConfig({
   plugins: ['typescript', 'unicorn', 'oxc'],

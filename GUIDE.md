@@ -5,7 +5,6 @@ Ce guide t'accompagne pas à pas pour identifier, comprendre et corriger les vul
 **Convention dans le code source :**
 
 - `//! VULNERABLE — Axx : Nom` → code vulnérable à corriger
-- `//* SECURE` → contre-mesure appliquée (visible dans `final/` pour référence)
 
 ---
 
@@ -33,7 +32,7 @@ pnpm dev
 
 ---
 
-## Étape 1 — A05 · Security Misconfiguration (CORS + Headers HTTP)
+## Étape 1 — A02 · Security Misconfiguration (CORS + Headers HTTP)
 
 ### Contexte
 
@@ -59,9 +58,9 @@ Deux middlewares sont disponibles dans le projet :
 ```ts
 // Restreindre CORS à une origine précise
 import cors from 'cors';
-app.use(cors({ origin: '...', credentials: true }));
+app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 
-// Ajouter ~15 headers de sécurité en une ligne
+// Ajouter ~11 headers de sécurité en une ligne
 import helmet from 'helmet';
 app.use(helmet());
 ```
@@ -96,7 +95,7 @@ Dans Postman, renvoyer la même requête et vérifier l'onglet **Headers** de la
 
 ---
 
-## Étape 2 — A03 · Injection SQL
+## Étape 2 — A05 · Injection SQL
 
 ### Contexte
 
@@ -153,7 +152,7 @@ Dans Postman, renvoyer **Auth / Login** avec le même payload d'injection → **
 
 ---
 
-## Étape 3 — A02 · Cryptographic Failures (mots de passe)
+## Étape 3 — A04 · Cryptographic Failures (mots de passe)
 
 ### Contexte
 
@@ -165,31 +164,31 @@ L'extension **SQLite Viewer** (recommandée dans le projet) permet d'ouvrir `sta
 
 ### Objectif
 
-- Hacher les mots de passe avec `bcrypt` au moment du seed (inscription).
-- Remplacer la comparaison en clair par `bcrypt.compare()` lors de l'authentification.
+- Hacher les mots de passe avec `argon2` au moment du seed (inscription).
+- Remplacer la comparaison en clair par `argon2.verify()` lors de l'authentification.
 
 ### Indices
 
 **Fichiers à modifier :** `src/modules/auth/auth.router.ts` · `src/db/seed.ts`
 
 ```ts
-import bcrypt from 'bcryptjs';
+import argon2 from 'argon2';
 
-// Au seeding (inscription) — salt factor 12 recommandé
-const hashedPassword = await bcrypt.hash(plaintextPassword, 12);
+// Au seeding (inscription)
+const hashedPassword = await argon2.hash(plaintextPassword);
 
 // À l'authentification — ne jamais re-hasher pour comparer
-const isValid = await bcrypt.compare(plaintextPassword, hashedPassword);
+const isValid = await argon2.verify(hashedPassword, plaintextPassword);
 ```
 
 #### 📖 Documentation
 
-- [bcryptjs — npm](https://www.npmjs.com/package/bcryptjs)
+- [argon2 — npm](https://github.com/ranisalt/node-argon2)
 - [OWASP — Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)
 
 ### Validation
 
-Ouvrir `local.db` dans SQLite Viewer après avoir relancé `pnpm db:seed` : les mots de passe affichent `$2a$12$...` (hash bcrypt illisible).
+Ouvrir `local.db` dans SQLite Viewer après avoir relancé `pnpm db:seed` : les mots de passe affichent `$argon2id$` (hash argon2 illisible).
 
 Dans Postman, envoyer **Auth / Login** avec les vraies identifiants `john.doe@example.com` / `123secret` → **HTTP 200** : le login fonctionne toujours malgré le hachage.
 
@@ -266,7 +265,7 @@ Tentative  7 → HTTP 429 ← bloqué (rate limit)
 
 ---
 
-## Étape 5 — A03 · XSS (Cross-Site Scripting)
+## Étape 5 — A05 · XSS (Cross-Site Scripting)
 
 ### Contexte
 
@@ -354,7 +353,7 @@ Le token est déjà généré et placé dans le formulaire (`GET /form` dans `ap
 ```ts
 // Côté serveur — vérification dans le handler POST
 const tokenFromBody = req.body.csrf; // valeur soumise dans le formulaire
-const tokenFromCookie = req.cookies.csrf; // cookie posé par le serveur
+const tokenFromCookie = req.signedCookies.csrf; // cookie signé posé par le serveur
 
 // Un site tiers ne peut pas lire le cookie (politique Same-Origin)
 // → seul le site légitime peut construire une requête avec les deux valeurs correspondantes
@@ -403,7 +402,7 @@ import { ForbiddenError } from '@/errors/index.js';
 
 // requireAuth vérifie le JWT et expose req.user (userId, email)
 router.get('/:id', requireAuth, validate(userParamsSchema, 'params'), async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.params as unknown as { id: string };
 
   // Comparer l'ID de la ressource demandée avec celui du token
   if (req.user!.userId !== Number(id)) {
@@ -510,11 +509,11 @@ Des outils SAST existent pour TypeScript/JavaScript : Semgrep, Snyk Code, SonarQ
 
 | #   | Vulnérabilité                   | Fichier clé             | Correction                           |
 | --- | ------------------------------- | ----------------------- | ------------------------------------ |
-| 1   | A05 — Security Misconfiguration | `app.ts`                | `helmet()` + `cors({ origin })`      |
-| 2   | A03 — SQL Injection             | `auth.router.ts`        | Requêtes paramétrées (Drizzle ORM)   |
-| 3   | A02 — Cryptographic Failures    | `auth.router.ts` + seed | `bcrypt.hash()` + `bcrypt.compare()` |
+| 1   | A02 — Security Misconfiguration | `app.ts`                | `helmet()` + `cors({ origin })`      |
+| 2   | A05 — SQL Injection             | `auth.router.ts`        | Requêtes paramétrées (Drizzle ORM)   |
+| 3   | A04 — Cryptographic Failures    | `auth.router.ts` + seed | `argon2.hash()` + `argon2.verify()`  |
 | 4   | A07 — Brute Force               | `auth.router.ts`        | `express-rate-limit`                 |
-| 5   | A03 — XSS                       | `comment.router.ts`     | `escape-html`                        |
+| 5   | A05 — XSS                       | `comment.router.ts`     | `escape-html`                        |
 | 6   | CSRF                            | `transfer.router.ts`    | Double Submit Cookie Pattern         |
 | 7   | A01 — Broken Access Control     | `users.router.ts`       | `requireAuth` + comparaison userId   |
 | 8   | Dépendances + code source       | `package.json`          | `pnpm audit` + SAST                  |

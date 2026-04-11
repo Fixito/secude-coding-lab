@@ -14,7 +14,7 @@ import { router } from './routes.js';
 
 export const app = express();
 
-//! VULNERABLE — A05 : Security Misconfiguration — CORS trop permissif
+//! VULNERABLE — A02 : Security Misconfiguration — CORS trop permissif
 // Sans configuration, Express n'envoie pas d'en-tête CORS et toute requête
 // cross-origin est bloquée par le navigateur. Mais si on utilise cors() sans
 // option, toutes les origines sont autorisées (*), ce qui permet à n'importe
@@ -26,12 +26,12 @@ export const app = express();
 // En production, remplacer par l'URL réelle du frontend.
 app.use(
   cors({
-    origin: env.NODE_ENV === 'development' ? 'http://localhost:5173' : false,
+    origin: env.NODE_ENV === 'development' ? env.FRONTEND_URL : false,
     credentials: true,
   }),
 );
 
-//! VULNERABLE — A05 : Security Misconfiguration — Headers HTTP manquants
+//! VULNERABLE — A02 : Security Misconfiguration — Headers HTTP manquants
 // Sans helmet, Express expose des informations sensibles (X-Powered-By: Express)
 // et n'envoie pas les en-têtes de sécurité recommandés, laissant le navigateur
 // sans protection contre le clickjacking, le sniffing MIME, les injections XSS, etc.
@@ -57,15 +57,24 @@ app.use(
   }),
 );
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json({ limit: '5mb' }));
-app.use(cookieParser());
+app.use(express.json());
+app.use(cookieParser(env.COOKIE_SECRET));
+
+app.get('/', (_req, res) => {
+  res.json({ message: 'Sécurité des applications web & OWASP' });
+});
 
 app.use('/api/v1', router);
 
 app.get('/form', (_req, res) => {
   const csrfToken = crypto.randomBytes(32).toString('hex');
 
-  res.cookie('csrf', csrfToken);
+  res.cookie('csrf', csrfToken, {
+    httpOnly: true,
+    sameSite: 'strict',
+    secure: env.NODE_ENV === 'production',
+    signed: true,
+  });
 
   res.send(`
     <form method="POST" action="/api/v1/transfers">

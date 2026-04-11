@@ -22,7 +22,7 @@ function createCommentRouter() {
   router.get('/', async (_req, res) => {
     const comments = await db.select().from(commentsTable);
 
-    //! VULNERABLE CODE - XSS
+    //! VULNERABLE — A05 : XSS (Cross-Site Scripting)
     // return res.send(comments.map((c) => `<p>${c.content}</p>`).join(''));
 
     return res.send(comments.map((c) => `<p>${escape(c.content)}</p>`).join(''));

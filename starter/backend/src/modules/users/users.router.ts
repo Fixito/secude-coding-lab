@@ -25,22 +25,18 @@ export function createUsersRouter() {
   // token JWT, puis appeler GET /api/v1/users/2 avec ce token → vous voyez
   // le profil de jane.smith@example.com.
   //
-  router.get(
-    '/:id',
-    validate(userParamsSchema, 'params'),
-    async (req, res) => {
-      const { id } = req.params;
+  router.get('/:id', validate(userParamsSchema, 'params'), async (req, res) => {
+    const { id } = req.params as unknown as { id: number };
 
-      const user = await db
-        .select({ id: usersTable.id, email: usersTable.email })
-        .from(usersTable)
-        .where(eq(usersTable.id, Number(id)));
+    const user = await db
+      .select({ id: usersTable.id, email: usersTable.email })
+      .from(usersTable)
+      .where(eq(usersTable.id, id));
 
-      if (!user[0]) return res.status(StatusCodes.NOT_FOUND).json({ message: 'User not found' });
+    if (!user[0]) return res.status(StatusCodes.NOT_FOUND).json({ message: 'User not found' });
 
-      return res.status(StatusCodes.OK).json({ data: user[0] });
-    },
-  );
+    return res.status(StatusCodes.OK).json({ data: user[0] });
+  });
 
   return router;
 }

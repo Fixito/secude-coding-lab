@@ -16,7 +16,7 @@ async function main() {
 
   console.log('Database reset.');
 
-  //! VULNERABLE — A02 : Cryptographic Failures
+  //! VULNERABLE — A04 : Cryptographic Failures
   // Les mots de passe sont stockés en clair dans la base de données.
   // Toute personne ayant accès à la DB (dump, sauvegarde exposée…) peut les lire directement.
   // Il n'y a ni salt, ni facteur de coût, ni hachage.

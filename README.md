@@ -4,9 +4,9 @@ Lab pédagogique pour apprendre à identifier et corriger les vulnérabilités w
 
 ## Guides
 
-| Fichier                                      | Pour qui                                                                      |
-| -------------------------------------------- | ----------------------------------------------------------------------------- |
-| [`GUIDE_APPRENANT.md`](./GUIDE_APPRENANT.md) | Apprenants — contexte, démo, objectifs et indices pour corriger chaque faille |
+| Fichier                  | Pour qui                                                                      |
+| ------------------------ | ----------------------------------------------------------------------------- |
+| [`GUIDE.md`](./GUIDE.md) | Apprenants — contexte, démo, objectifs et indices pour corriger chaque faille |
 
 ## Structure
 

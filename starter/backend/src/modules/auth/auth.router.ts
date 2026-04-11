@@ -6,6 +6,7 @@ import { env } from '@/config/env.js';
 import { db } from '@/db/client.js';
 import { UnauthorizedError } from '@/errors/index.js';
 import { validate } from '@/middlewares/validate.middleware.js';
+
 import { loginSchema } from './auth.schema.js';
 
 export function createAuthRouter() {
@@ -14,7 +15,7 @@ export function createAuthRouter() {
   router.post('/login', validate(loginSchema), async (req, res) => {
     const { email, password } = req.body;
 
-    //! VULNERABLE — A03 : Injection SQL
+    //! VULNERABLE — A05 : Injection SQL
     // La concaténation directe de l'entrée utilisateur dans la requête SQL
     // permet à un attaquant d'altérer la logique de la requête.
 
@@ -24,7 +25,7 @@ export function createAuthRouter() {
     const result = await db.run(query);
     const user = result.rows[0];
 
-    //! VULNERABLE — A02 : Cryptographic Failures
+    //! VULNERABLE — A04 : Cryptographic Failures
     // Même avec des requêtes paramétrées, comparer les mots de passe en clair
     // est dangereux : une fuite de la base de données expose immédiatement
     // tous les mots de passe. Il n'y a ni salt, ni facteur de coût.

@@ -1,7 +1,9 @@
 import type { NextFunction, Request, Response } from 'express';
 import type { z } from 'zod';
 
-export function validate(schema: z.ZodType, source: 'body' | 'query' | 'params' = 'body') {
+type Source = 'body' | 'query' | 'params';
+
+export function validate(schema: z.ZodType, source: Source = 'body') {
   return (req: Request, _res: Response, next: NextFunction) => {
     const result = schema.safeParse(req[source]);
 

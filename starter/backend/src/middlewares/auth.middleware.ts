@@ -25,7 +25,7 @@ export function requireAuth(req: Request, _res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization;
 
   if (!authHeader?.startsWith('Bearer ')) {
-    throw new UnauthorizedError('Token manquant');
+    throw new UnauthorizedError('Missing token');
   }
 
   const token = authHeader.slice(7);
@@ -35,6 +35,6 @@ export function requireAuth(req: Request, _res: Response, next: NextFunction) {
     req.user = payload;
     next();
   } catch {
-    throw new UnauthorizedError('Token invalide ou expiré');
+    throw new UnauthorizedError('Invalid or expired token');
   }
 }

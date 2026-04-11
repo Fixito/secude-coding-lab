@@ -1,5 +1,6 @@
 {
   "recommendations": [
+    "aaron-bond.better-comments",
     "mikestead.dotenv",
     "Postman.postman-for-vscode",
     "oxc.oxc-vscode",

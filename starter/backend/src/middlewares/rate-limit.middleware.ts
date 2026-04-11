@@ -1,10 +1,11 @@
 import { rateLimit } from 'express-rate-limit';
+import { StatusCodes } from 'http-status-codes';
 
-export function createRateLimiter(max: number, windowMs: number, message: string) {
+export function createRateLimiter(limit: number, windowMs: number, message: string) {
   return rateLimit({
-    max,
+    limit,
     windowMs,
-    message: { title: 'Too Many Requests', status: 429, detail: message },
+    message: { title: 'Too Many Requests', status: StatusCodes.TOO_MANY_REQUESTS, detail: message },
     standardHeaders: 'draft-8',
     legacyHeaders: false,
   });

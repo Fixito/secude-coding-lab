@@ -14,10 +14,10 @@ API REST Express/TypeScript servant de support pédagogique pour illustrer des v
 | [Drizzle ORM](https://orm.drizzle.team/)                                       | Accès base de données                            |
 | [libSQL / SQLite](https://github.com/tursodatabase/libsql)                     | Base de données locale                           |
 | [Zod](https://zod.dev/)                                                        | Validation des entrées                           |
-| [bcryptjs](https://github.com/nicolo-ribaudo/bcryptjs)                         | Hachage des mots de passe                        |
+| [argon2](https://github.com/ranisalt/node-argon2)                              | Hachage des mots de passe                        |
 | [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken)                     | Authentification JWT                             |
 | [express-rate-limit](https://github.com/express-rate-limit/express-rate-limit) | Protection contre le bruteforce                  |
-| [helmet](https://helmetjs.github.io/)                                          | En-têtes HTTP de sécurité                        |
+| [helmet](https://github.com/helmetjs/helmet)                                   | En-têtes HTTP de sécurité                        |
 | [cors](https://github.com/expressjs/cors)                                      | Configuration CORS                               |
 | [pino](https://getpino.io/)                                                    | Logging structuré (JSON en prod, lisible en dev) |
 | [pino-http](https://github.com/pinojs/pino-http)                               | Middleware de logging HTTP (remplace Morgan)     |
@@ -28,19 +28,22 @@ API REST Express/TypeScript servant de support pédagogique pour illustrer des v
 **Prérequis :** Node.js 20+, pnpm
 
 ```bash
-# 1. Installer les dépendances
+# 1. Installer pnpm
+npm install -g pnpm
+
+# 2. Installer les dépendances
 pnpm install
 
-# 2. Configurer les variables d'environnement
+# 3. Configurer les variables d'environnement
 cp .env.example .env
 # Éditer .env et renseigner JWT_SECRET avec une valeur forte :
 # openssl rand -hex 64
 
-# 3. Créer et peupler la base de données
+# 4. Créer et peupler la base de données
 pnpm db:push
 pnpm db:seed
 
-# 4. Lancer le serveur en mode développement
+# 5. Lancer le serveur en mode développement
 pnpm dev
 ```
 
@@ -48,13 +51,15 @@ Le serveur démarre sur `http://localhost:5000`.
 
 ## Variables d'environnement
 
-| Variable       | Défaut          | Description                                      |
-| -------------- | --------------- | ------------------------------------------------ |
-| `NODE_ENV`     | `development`   | Environnement d'exécution                        |
-| `PORT`         | `5000`          | Port d'écoute                                    |
-| `HOSTNAME`     | `localhost`     | Hôte d'écoute                                    |
-| `DB_FILE_NAME` | `file:local.db` | Chemin vers la base SQLite                       |
-| `JWT_SECRET`   | —               | **Requis.** Clé secrète JWT (min. 32 caractères) |
+| Variable        | Défaut                  | Description                                      |
+| --------------- | ----------------------- | ------------------------------------------------ |
+| `NODE_ENV`      | `development`           | Environnement d'exécution                        |
+| `PORT`          | `5000`                  | Port d'écoute                                    |
+| `HOSTNAME`      | `localhost`             | Hôte d'écoute                                    |
+| `DB_FILE_NAME`  | `file:local.db`         | Chemin vers la base SQLite                       |
+| `FRONTEND_URL`  | `http://localhost:5173` | URL du frontend pour les CORS                    |
+| `JWT_SECRET`    | —                       | **Requis.** Clé secrète JWT (min. 32 caractères) |
+| `COOKIE_SECRET` | —                       | **Requis.** Clé secrète pour signer les cookies  |
 
 ## Scripts
 
@@ -102,7 +107,7 @@ src/
 | `GET`   | `/api/v1/comments`   | Non  | Lister les commentaires        |
 | `POST`  | `/api/v1/comments`   | Non  | Créer un commentaire           |
 | `POST`  | `/api/v1/transfers`  | Non  | Virement (démo CSRF)           |
-| `GET`   | `/api/v1/users/:id`  | JWT  | Profil utilisateur (démo IDOR) |
+| `GET`   | `/api/v1/users/:id`  | Non  | Profil utilisateur (démo IDOR) |
 | `GET`   | `/form`              | Non  | Formulaire de démo CSRF        |
 
 ## Vulnérabilités démontrées
@@ -110,7 +115,6 @@ src/
 Convention dans le code :
 
 - `//! VULNERABLE — Axx : Nom` : version vulnérable (commentée ou annotée)
-- `//* SECURE` : contre-mesure appliquée
 
 ---
 
@@ -124,16 +128,16 @@ Convention dans le code :
 
 ---
 
-### A02 — Cryptographic Failures
+### A04 — Cryptographic Failures
 
 - **Module :** `auth`
 - **Vulnérable :** mot de passe stocké et comparé en clair en base de données
-- **Objectif :** hacher les mots de passe avec `bcryptjs` (salt factor 12) au seeding, utiliser `bcrypt.compare()` pour l'authentification
+- **Objectif :** hacher les mots de passe avec `argon2` au seeding, utiliser `argon2.verify()` pour l'authentification
 - **Concept clé :** le salt rend chaque hash unique même pour des mots de passe identiques ; le work factor rend les attaques GPU coûteuses
 
 ---
 
-### A03 — Injection (SQL Injection)
+### A05 — Injection (SQL Injection)
 
 - **Module :** `auth`
 - **Vulnérable :** construction d'une requête SQL par concaténation de chaînes
@@ -142,7 +146,7 @@ Convention dans le code :
 
 ---
 
-### A03 — Injection (XSS — Cross-Site Scripting)
+### A05 — Injection (XSS — Cross-Site Scripting)
 
 - **Module :** `comment`
 - **Route :** `GET /api/v1/comments`
@@ -152,13 +156,13 @@ Convention dans le code :
 
 ---
 
-### A05 — Security Misconfiguration
+### A02 — Security Misconfiguration
 
 - **Fichier :** `app.ts`
 - **Vulnérable :** absence de headers de sécurité HTTP, CORS non configuré (tout ou rien)
 - **Objectif :**
   - Ajouter `helmet()` pour les headers de sécurité (CSP, X-Frame-Options, HSTS…)
-  - Configurer `cors({ origin: 'http://localhost:3000', credentials: true })`
+  - Configurer `cors({ origin: process.env.FRONTEND_URL, credentials: true })`
 - **À observer :** comparer les headers HTTP dans l'onglet **Headers** de Postman avec/sans helmet
 
 ---

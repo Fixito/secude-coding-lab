@@ -1,4 +1,4 @@
-import bcrypt from 'bcryptjs';
+import argon2 from 'argon2';
 import { eq } from 'drizzle-orm';
 import { Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
@@ -19,7 +19,7 @@ export function createAuthRouter() {
   router.post('/login', loginRateLimiter, validate(loginSchema), async (req, res) => {
     const { email, password } = req.body;
 
-    //! VULNERABLE — A03 : Injection SQL
+    //! VULNERABLE — A05 : Injection SQL
     // La concaténation directe de l'entrée utilisateur dans la requête SQL
     // permet à un attaquant d'altérer la logique de la requête.
 
@@ -29,7 +29,7 @@ export function createAuthRouter() {
     // const result = await db.run(query);
     // const user = result.rows[0];
 
-    //! VULNERABLE — A02 : Cryptographic Failures
+    //! VULNERABLE — A04 : Cryptographic Failures
     // Même avec des requêtes paramétrées, comparer les mots de passe en clair
     // est dangereux : une fuite de la base de données expose immédiatement
     // tous les mots de passe. Il n'y a ni salt, ni facteur de coût.
@@ -38,18 +38,18 @@ export function createAuthRouter() {
     // const user = result[0];
     // if (!user || user.password !== password) throw new UnauthorizedError('Invalid email or password');
 
-    //* SECURE — A03 : Requêtes paramétrées via l'ORM
+    //* SECURE — A05 : Requêtes paramétrées via l'ORM
     // Drizzle génère des requêtes préparées (prepared statements) : les valeurs
     // sont transmises séparément de la requête, rendant toute injection impossible.
 
-    //* SECURE — A02 : Comparaison avec bcrypt
+    //* SECURE — A04 : Comparaison avec argon2
     // On récupère d'abord l'utilisateur par email, puis on vérifie le mot de passe
-    // avec bcrypt.compare(). bcrypt intègre un salt unique par hash et un facteur
-    // de coût (work factor) qui rend les attaques par force brute très coûteuses.
+    // avec argon2.verify(). argon2 intègre un salt unique par hash et un facteur
+    // de coût (memory cost) qui rend les attaques par force brute très coûteuses.
     const result = await db.select().from(usersTable).where(eq(usersTable.email, email));
     const user = result[0];
 
-    const isPasswordValid = user ? await bcrypt.compare(password, user.password) : false;
+    const isPasswordValid = user ? await argon2.verify(user.password, password) : false;
 
     if (!isPasswordValid) {
       throw new UnauthorizedError('Invalid email or password');

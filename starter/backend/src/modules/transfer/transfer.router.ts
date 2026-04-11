@@ -9,7 +9,7 @@ export function createTransferRouter() {
     // Sans vérification, n'importe quel site tiers peut soumettre ce formulaire
     // au nom d'un utilisateur authentifié. Un simple lien malveillant suffit :
     // <img src="http://bank.com/api/v1/transfers?to=attacker&amount=1000" />
-    // console.log(req.cookies);
+    // console.log('🚀 ~ createTransferRouter ~ req.cookies:', req.cookies);
 
     return res.status(StatusCodes.OK).json({ data: { message: 'Transfer done.' } });
   });

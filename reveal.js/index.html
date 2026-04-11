@@ -723,7 +723,7 @@ app.use(cors({
 }));
     </code></pre>
             <p class="fragment small">
-              <code>helmet()</code> ajoute ~15 headers de sécurité en une seule ligne.
+              <code>helmet()</code> ajoute ~11 headers de sécurité en une seule ligne.
             </p>
           </section>
 
@@ -1091,8 +1091,8 @@ z.string().email()
                 </tr>
 
                 <tr class="fragment">
-                  <td class="text-success">Hash + salt</td>
-                  <td><code>$2a$12$xK...</code></td>
+                  <td class="text-success">Hash + Salt</td>
+                  <td><code>$argon2id$...</code></td>
                   <td>✅ Résistant</td>
                 </tr>
               </tbody>
@@ -1100,14 +1100,14 @@ z.string().email()
           </section>
 
           <section>
-            <h3>bcrypt — 3 concepts</h3>
+            <h3>argon2 — 3 concepts</h3>
 
             <ol>
               <li class="fragment">
                 <strong>Hachage</strong> — fonction à sens unique<br />
                 <span class="small"
                   >Impossible de retrouver <code>123secret</code> depuis
-                  <code>$2a$12$...</code></span
+                  <code>$argon2id$v=19$m=4096,t=3,p=1$...</code></span
                 >
               </li>
 
@@ -1119,21 +1119,8 @@ z.string().email()
               </li>
 
               <li class="fragment">
-                <strong>Work factor</strong> (salt rounds = 12)<br />
-                <span class="small"
-                  >2¹² = 4 096 itérations. Chaque tentative ≈ 100ms.<br />
-                  1 million de tentatives = ~28 heures 🐌</span
-                >
-              </li>
+                <strong>Cost factor</strong> — rend le hash plus lent à calculer<br />
             </ol>
-
-            <aside class="notes">
-              <p>Démo utile : dans un REPL Node.js, appeler deux fois bcrypt.hash("123secret", 12) pour montrer que le même mot de passe génère des hashes différents grâce au salt.</p>
-
-              const { default: bcrypt } = await import("bcryptjs");
-              await bcrypt.hash("123secret",12);
-              await bcrypt.hash("123secret",12);
-            </aside>
           </section>
 
           <section>
@@ -1155,26 +1142,26 @@ if (user.password !== password) {
           </section>
 
           <section>
-            <h3>Correction — bcrypt</h3>
+            <h3>Correction — argon2</h3>
 
             <pre><code class="language-typescript" data-trim data-line-numbers>
-import bcrypt from 'bcryptjs';
+import argon2 from 'argon2';
 
-// Au seeding — salt factor 12 recommandé
-const hashedPassword = await bcrypt.hash('123secret', 12);
+// Au seeding
+const hashedPassword = await argon2.hash('123secret');
 await db.insert(usersTable).values({
   email: 'john.doe@example.com',
   password: hashedPassword,
 });
 
 // À l'authentification
-const isValid = await bcrypt.compare(
-  plaintextPassword,
+const isValid = await argon2.verify(
   user.password
+  plaintextPassword,
 );
     </code></pre>
             <p class="fragment text-success">
-              Ne jamais re-hasher pour comparer !<br /><code>bcrypt.compare()</code> gère le salt
+              Ne jamais re-hasher pour comparer !<br /><code>argon2.verify()</code> gère le salt
               automatiquement ✅
             </p>
           </section>
@@ -1185,10 +1172,10 @@ const isValid = await bcrypt.compare(
             <p><strong>Fichiers :</strong> <code>auth.router.ts</code> · <code>seed.ts</code></p>
 
             <ol>
-              <li>Hacher les mots de passe dans le seed avec <code>bcrypt.hash()</code></li>
-              <li>Remplacer la comparaison par <code>bcrypt.compare()</code></li>
+              <li>Hacher les mots de passe dans le seed avec <code>argon2.hash()</code></li>
+              <li>Remplacer la comparaison par <code>argon2.verify()</code></li>
               <li>Relancer <code>pnpm db:seed</code></li>
-              <li>Vérifier dans SQLite Viewer : <code>$2a$12$...</code></li>
+              <li>Vérifier dans SQLite Viewer : <code>$argon2id$...</code></li>
               <li>Vérifier : le login normal fonctionne toujours</li>
             </ol>
 
@@ -1199,13 +1186,13 @@ const isValid = await bcrypt.compare(
             <h3>❓ Quiz — Cryptographie</h3>
 
             <p>
-              Pourquoi deux appels à <code>bcrypt.hash("123secret", 12)</code><br />produisent-ils
+              Pourquoi deux appels à <code>argon2.hash("123secret")</code><br />produisent-ils
               des hashes différents ?
             </p>
 
             <div class="fragment">
               <p>
-                Parce que bcrypt génère un <strong>salt aléatoire unique</strong><br />à chaque
+                Parce que argon2 génère un <strong>salt aléatoire unique</strong><br />à chaque
                 appel, intégré dans le hash lui-même.
               </p>
 
@@ -1309,7 +1296,7 @@ router.post('/login',
             </ul>
 
             <p class="fragment small" style="margin-top: 1em">
-              💡 <code>bcrypt.compare()</code> prend toujours le même temps (protection
+              💡 <code>argon2.verify()</code> prend toujours le même temps (protection
               <em>timing attack</em>).
             </p>
 
@@ -1562,7 +1549,7 @@ const html = comments
                 <tr>
                   <td>3</td>
                   <td>Mots de passe en clair</td>
-                  <td><code>bcrypt</code></td>
+                  <td><code>argon2</code></td>
                 </tr>
 
                 <tr>
@@ -1681,7 +1668,7 @@ const html = comments
             <pre><code class="language-typescript" data-trim data-line-numbers>
 //* SECURE — CSRF Double Submit Cookie
 const tokenFromBody = req.body.csrf;
-const tokenFromCookie = req.cookies.csrf;
+const tokenFromCookie = req.signedCookies.csrf;
 
 if (tokenFromBody !== tokenFromCookie) {
   throw new ForbiddenError('Invalid CSRF token');
@@ -2174,7 +2161,7 @@ Code source → Analyse des patterns → Rapport
               <li class="fragment">☐ Headers de sécurité configurés (helmet)</li>
               <li class="fragment">☐ CORS restreint à l'origine autorisée</li>
               <li class="fragment">☐ Requêtes SQL paramétrées (ORM ou prepared statements)</li>
-              <li class="fragment">☐ Mots de passe hashés (bcrypt, argon2)</li>
+              <li class="fragment">☐ Mots de passe hashés (argon2, argon2)</li>
               <li class="fragment">☐ Rate limiting sur les routes sensibles</li>
               <li class="fragment">☐ Échappement HTML systématique</li>
               <li class="fragment">☐ Tokens CSRF sur les formulaires</li>
@@ -2231,7 +2218,7 @@ Code source → Analyse des patterns → Rapport
                 <tr>
                   <td>3</td>
                   <td>Mots de passe en clair</td>
-                  <td><code>bcrypt</code></td>
+                  <td><code>argon2</code></td>
                 </tr>
 
                 <tr>
